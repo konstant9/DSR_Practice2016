@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Data.Entity.SqlServer;
+using AutoServiceModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,7 +32,7 @@ namespace AutoServiceManager
             FillDataGrid();
         }
 
-        private void numberTextBlock1_MouseDown(object sender, MouseButtonEventArgs e)
+        private void RecordsNumberBlock1_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (_rowCount == 5)
                 return;
@@ -51,7 +52,7 @@ namespace AutoServiceManager
             FillDataGrid();
         }
 
-        private void numberTextBlock2_MouseDown(object sender, MouseButtonEventArgs e)
+        private void RecordsNumberBlock2_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (_rowCount == 20)
                 return;
@@ -70,7 +71,7 @@ namespace AutoServiceManager
             FillDataGrid();
         }
 
-        private void numberTextBlock3_MouseDown(object sender, MouseButtonEventArgs e)
+        private void RecordsNumberBlock3_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (_rowCount == 50)
                 return;
@@ -89,7 +90,7 @@ namespace AutoServiceManager
             FillDataGrid();
         }
 
-        private void numberTextBlock4_MouseDown(object sender, MouseButtonEventArgs e)
+        private void RecordsNumberBlock4_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (_rowCount == 100)
                 return;
@@ -109,21 +110,21 @@ namespace AutoServiceManager
 
         }
 
-        private void numberTextBlock5_MouseDown(object sender, MouseButtonEventArgs e)
+        private void RecordsNumberBlock5_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            pageNumberTextBox.Visibility = Visibility.Visible;
-            pageNumberTextBox.Focus();
+            RecordsNumberTextBox.Visibility = Visibility.Visible;
+            RecordsNumberTextBox.Focus();
         }
 
-        private void pageNumberTextBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        private void RecordsNumberTextBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            pageNumberTextBox.Visibility = Visibility.Hidden;
-            pageNumberTextBox.Text = string.Empty;
+            RecordsNumberTextBox.Visibility = Visibility.Hidden;
+            RecordsNumberTextBox.Text = string.Empty;
         }
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (pageNumberTextBox.IsFocused)
+            if (RecordsNumberTextBox.IsFocused)
                 Keyboard.ClearFocus();
         }
 
@@ -133,7 +134,7 @@ namespace AutoServiceManager
             if (e.Key == Key.Enter)
             {
                 int rowCount;
-                if (int.TryParse(pageNumberTextBox.Text, out rowCount))
+                if (int.TryParse(RecordsNumberTextBox.Text, out rowCount))
                 {
                     if (_rowCount == rowCount || rowCount <= 0)
                     {
@@ -156,24 +157,24 @@ namespace AutoServiceManager
                 }
                 Keyboard.ClearFocus();
             }
-            pageNumberTextBlock.Text = "Страница " + (_currentPage + 1) + " из " + _numberOfPages;
+            PageNumberTextBlock.Text = "Страница " + (_currentPage + 1) + " из " + _numberOfPages;
         }
 
         private void FillDataGrid()
         {
             using (var context = new AutoServiceEntities())
             {
-                var totalAmountOfRows = context.AutoOrder.Count();
+                var totalAmountOfRows = context.WorksAutoOrder.Count();
                 _numberOfPages = totalAmountOfRows%_rowCount != 0
                     ? totalAmountOfRows/_rowCount + 1
                     : totalAmountOfRows/_rowCount;
-                dataGrid.ItemsSource = totalAmountOfRows < _rowCount ? context.AutoOrder.OrderBy(x => x.OrderID).Skip(_currentPage * _rowCount).ToList() 
-                    : context.AutoOrder.OrderBy(x => x.OrderID).Skip(_currentPage * _rowCount).Take(_rowCount).ToList();
+                dataGrid.ItemsSource = totalAmountOfRows < _rowCount ? context.WorksAutoOrder.OrderBy(x => x.OrderID).Skip(_currentPage * _rowCount).ToList() 
+                    : context.WorksAutoOrder.OrderBy(x => x.OrderID).Skip(_currentPage * _rowCount).Take(_rowCount).ToList();
             }
-            pageNumberTextBlock.Text = "Страница " + (_currentPage + 1) + " из " + _numberOfPages;
+            PageNumberTextBlock.Text = "Страница " + (_currentPage + 1) + " из " + _numberOfPages;
         }
 
-        private void firstPageTextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        private void FirstPageTextBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (_currentPage == 0)
                 return;
@@ -191,7 +192,7 @@ namespace AutoServiceManager
             FillDataGrid();
         }
 
-        private void lastPageTextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        private void LastPageTextBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (_currentPage == _numberOfPages - 1)
                 return;
@@ -209,7 +210,7 @@ namespace AutoServiceManager
             FillDataGrid();
         }
 
-        private void previousPageTextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        private void PreviousPageTextBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (_currentPage == 0)
                 return;
@@ -228,7 +229,7 @@ namespace AutoServiceManager
             FillDataGrid();
         }
 
-        private void nextPageTextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        private void NextPageTextBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (_currentPage == _numberOfPages - 1)
                 return;
@@ -251,7 +252,7 @@ namespace AutoServiceManager
             var row = (DataGridRow) e.Source;
             using (var context = new AutoServiceEntities())
             {
-                var orderId = ((AutoOrder)(dataGrid.Items[row.GetIndex()])).OrderID;
+                var orderId = ((WorksAutoOrder)(dataGrid.Items[row.GetIndex()])).OrderID;
                 var owner = context.Customers.Where(x => x.Orders.Any(y => y.OrderID == orderId)).ToList().First();
 
                 var stackPanel = new StackPanel();
@@ -262,7 +263,7 @@ namespace AutoServiceManager
                 var birthdayTextBlock = new TextBlock
                 {
                     Text = owner.Birthday == null ? "Дата рождения не указана" :
-                        $"Дата рождения: {((DateTime)owner.Birthday).Day}/{((DateTime)owner.Birthday).Month}/{((DateTime)owner.Birthday).Year}"
+                        $"Дата рождения: {((DateTime)owner.Birthday).Day}.{((DateTime)owner.Birthday).Month}.{((DateTime)owner.Birthday).Year}"
                 };
 
 
@@ -294,7 +295,7 @@ namespace AutoServiceManager
             ((ToolTip) row.ToolTip).IsOpen = false;
         }
 
-        private void dataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        private void MainDataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             switch (e.Column.Header.ToString())
             {
@@ -349,6 +350,7 @@ namespace AutoServiceManager
                     {
                         e.Column.Header = "Время начала";
                         ((DataGridTextColumn)e.Column).ElementStyle = (Style)dataGrid.FindResource("WrappedTextBlockStyle");
+                        ((DataGridTextColumn)e.Column).Binding.StringFormat = "{0:dd.MM.yyyy hh:mm}";
                         e.Column.Width = new DataGridLength(1, DataGridLengthUnitType.SizeToHeader);
                         break;
                     }
@@ -357,6 +359,7 @@ namespace AutoServiceManager
                         e.Column.Header = "Время" + Environment.NewLine + " окончания ";
                         ((DataGridTextColumn)e.Column).ElementStyle = (Style)dataGrid.FindResource("WrappedTextBlockStyle");
                         e.Column.Width = new DataGridLength(1, DataGridLengthUnitType.SizeToHeader);
+                        ((DataGridTextColumn)e.Column).Binding.StringFormat = "{0:dd.MM.yyyy hh:mm}" ;
                         (((DataGridBoundColumn)(e.Column)).Binding).TargetNullValue = "Заказ выполняется";
                         e.Column.CanUserSort = true;
                         break;
@@ -370,456 +373,457 @@ namespace AutoServiceManager
             }
         }
 
-        private void filterButton_Click(object sender, RoutedEventArgs e)
+        private void FilterButton_Click(object sender, RoutedEventArgs e)
         {
-            searchComboBox.SelectedItem = null;
-            searchTextBox.Text = string.Empty;
+            SearchComboBox.SelectedItem = null;
+            SearchTextBox.Text = string.Empty;
+            if (!FilterDataGrid())
+                return;
             _currentPage = 0;
-            FilterDataGrid();
             _isSearchAccomplished = false;
+
         }
 
-        private void FilterDataGrid()
+        private bool FilterDataGrid()
         {
-            if (columnFilterComboBox.SelectedItem != null)
+            if (ColumnFilterComboBox.SelectedItem == null) return false;
+            if (StringValueFilterComboBox.Visibility == Visibility.Visible)
             {
-                if (stringValueFilterComboBox.Visibility == Visibility.Visible)
+                if (StringValueFilterComboBox.SelectedItem == null) return false;
+
+                _isFiltered = true;
+                switch (((ComboBoxItem) ColumnFilterComboBox.SelectedItem).Content.ToString())
                 {
-                        if (stringValueFilterComboBox.SelectedItem == null) return;
+                    case "Марка":
+                    {
+                        using (var context = new AutoServiceEntities())
+                        {
+                            var query =
+                                context.WorksAutoOrder.Where(
+                                    x =>
+                                        x.CarBrand == StringValueFilterComboBox.SelectedItem.ToString());
+                            FillDataGrid(query);
+                        }
+                        break;
+                    }
+                    case "Модель":
+                    {
+                        using (var context = new AutoServiceEntities())
+                        {
+                            var query =
+                                context.WorksAutoOrder.Where(
+                                    x =>
+                                        x.CarModel == StringValueFilterComboBox.SelectedItem.ToString());
+                            FillDataGrid(query);
+                        }
+                        break;
+                    }
+                    case "Тип трансмиссии":
+
+                    {
+                        using (var context = new AutoServiceEntities())
+
+                        {
+                            var query =
+                                context.WorksAutoOrder.Where(
+                                    x =>
+                                        x.TransmissionType == StringValueFilterComboBox.SelectedItem.ToString());
+                            FillDataGrid(query);
+                        }
+                        break;
+                    }
+                }
+                    
+            }
+            else
+            {
+                if (NumericValueFilterComboBox.SelectedItem == null || NumericValueTextBox.Text == string.Empty)
+                    return false;
+                if (((ComboBoxItem) ColumnFilterComboBox.SelectedItem).Content.ToString() == "Время начала"
+                    || ((ComboBoxItem) ColumnFilterComboBox.SelectedItem).Content.ToString() == "Время окончания")
+                {
+                    DateTime date;
+                    if (!DateTime.TryParse(NumericValueTextBox.Text, out date))
+                        return false;
 
                     _isFiltered = true;
-                    switch (((ComboBoxItem) columnFilterComboBox.SelectedItem).Content.ToString())
-                        {
-                            case "Марка":
-                            {
-                                using (var context = new AutoServiceEntities())
-                                {
-                                    var query =
-                                        context.AutoOrder.Where(
-                                            x =>
-                                                x.CarBrand == stringValueFilterComboBox.SelectedItem.ToString());
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
-                            case "Модель":
-                            {
-                                using (var context = new AutoServiceEntities())
-                                {
-                                    var query =
-                                        context.AutoOrder.Where(
-                                            x =>
-                                                x.CarModel == stringValueFilterComboBox.SelectedItem.ToString());
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
-                            case "Тип трансмиссии":
-
-                            {
-                                using (var context = new AutoServiceEntities())
-
-                                {
-                                    var query =
-                                        context.AutoOrder.Where(
-                                            x =>
-                                                x.TransmissionType == stringValueFilterComboBox.SelectedItem.ToString());
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
-                        }
-                    
-                }
-                else
-                {
-                    if (numericValueFilterComboBox.SelectedItem == null || numericValueTextBox.Text == string.Empty)
-                        return;
-                    if (((ComboBoxItem) columnFilterComboBox.SelectedItem).Content.ToString() == "Время начала"
-                        || ((ComboBoxItem) columnFilterComboBox.SelectedItem).Content.ToString() == "Время окончания")
+                    if (((ComboBoxItem) ColumnFilterComboBox.SelectedItem).Content.ToString() == "Время начала")
                     {
-                        DateTime date;
-                        if (!DateTime.TryParse(numericValueTextBox.Text, out date))
-                            return;
-
-                        _isFiltered = true;
-                        if (((ComboBoxItem) columnFilterComboBox.SelectedItem).Content.ToString() == "Время начала")
+                        switch (((ComboBoxItem) NumericValueFilterComboBox.SelectedItem).Content.ToString())
                         {
-                            switch (((ComboBoxItem) numericValueFilterComboBox.SelectedItem).Content.ToString())
+                            case ">=":
                             {
-                                case ">=":
-                                {
-                                    using (var context = new AutoServiceEntities())
+                                using (var context = new AutoServiceEntities())
 
-                                    {
-                                        var query =
-                                            context.AutoOrder.Where(
-                                                x =>
-                                                    (x.WorksStart >= date) || (x.WorksStart == null));
-                                        FillDataGrid(query);
-                                    }
-                                    break;
-                                }
-                                case "<=":
                                 {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.AutoOrder.Where(
-                                                x =>
-                                                    (x.WorksStart <= date) || (x.WorksStart == null));
-                                        FillDataGrid(query);
-                                    }
-                                    break;
+                                    var query =
+                                        context.WorksAutoOrder.Where(
+                                            x =>
+                                                (x.WorksStart >= date) || (x.WorksStart == null));
+                                    FillDataGrid(query);
                                 }
-                                case "=":
+                                break;
+                            }
+                            case "<=":
+                            {
+                                using (var context = new AutoServiceEntities())
+
                                 {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.AutoOrder.Where(
-                                                x =>
-                                                    DbFunctions.TruncateTime(x.WorksStart) == date.Date);
-                                        FillDataGrid(query);
-                                    }
-                                    break;
+                                    var query =
+                                        context.WorksAutoOrder.Where(
+                                            x =>
+                                                (x.WorksStart <= date) || (x.WorksStart == null));
+                                    FillDataGrid(query);
                                 }
-                                case ">":
+                                break;
+                            }
+                            case "=":
+                            {
+                                using (var context = new AutoServiceEntities())
+
                                 {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.AutoOrder.Where(
-                                                x =>
-                                                    (x.WorksStart > date) || (x.WorksStart == null));
-                                        FillDataGrid(query);
-                                    }
-                                    break;
+                                    var query =
+                                        context.WorksAutoOrder.Where(
+                                            x =>
+                                                DbFunctions.TruncateTime(x.WorksStart) == date.Date);
+                                    FillDataGrid(query);
                                 }
-                                case "<":
+                                break;
+                            }
+                            case ">":
+                            {
+                                using (var context = new AutoServiceEntities())
+
                                 {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.AutoOrder.Where(
-                                                x =>
-                                                    (x.WorksStart < date) || (x.WorksStart == null));
-                                        FillDataGrid(query);
-                                    }
-                                    break;
+                                    var query =
+                                        context.WorksAutoOrder.Where(
+                                            x =>
+                                                (DbFunctions.TruncateTime(x.WorksStart) > date.Date) || (x.WorksStart == null));
+                                    FillDataGrid(query);
                                 }
+                                break;
+                            }
+                            case "<":
+                            {
+                                using (var context = new AutoServiceEntities())
+
+                                {
+                                    var query =
+                                        context.WorksAutoOrder.Where(
+                                            x =>
+                                                (DbFunctions.TruncateTime(x.WorksStart) < date.Date) || (x.WorksStart == null));
+                                    FillDataGrid(query);
+                                }
+                                break;
                             }
                         }
-                        else
-                        {
-                            switch (((ComboBoxItem) numericValueFilterComboBox.SelectedItem).Content.ToString())
-                            {
-                                case ">=":
-                                {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.AutoOrder.Where(
-                                                x =>
-                                                    (x.WorksFinish >= date) || (x.WorksFinish == null));
-                                        FillDataGrid(query);
-                                    }
-                                    break;
-                                }
-                                case "<=":
-                                {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.AutoOrder.Where(
-                                                x =>
-                                                    (x.WorksFinish <= date) || (x.WorksFinish == null));
-                                        FillDataGrid(query);
-                                    }
-                                    break;
-                                }
-                                case "=":
-                                {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.AutoOrder.Where(
-                                                x =>
-                                                    DbFunctions.TruncateTime(x.WorksFinish) == date.Date);
-                                        FillDataGrid(query);
-                                    }
-                                    break;
-                                }
-                                case ">":
-                                {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.AutoOrder.Where(
-                                                x =>
-                                                    (x.WorksFinish > date) || (x.WorksFinish == null));
-                                        FillDataGrid(query);
-                                    }
-                                    break;
-                                }
-                                case "<":
-                                {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.AutoOrder.Where(
-                                                x =>
-                                                    (x.WorksFinish < date) || (x.WorksFinish == null));
-                                        FillDataGrid(query);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
+                        return true;
                     }
                     else
                     {
-                        int value;
-                        if (!int.TryParse(numericValueTextBox.Text, out value))
-                            return;
-
-                        
-                        if (((ComboBoxItem) columnFilterComboBox.SelectedItem).Content.ToString() == "Мощность двигателя")
+                        switch (((ComboBoxItem) NumericValueFilterComboBox.SelectedItem).Content.ToString())
                         {
-                            _isFiltered = true;
-                            switch (((ComboBoxItem)numericValueFilterComboBox.SelectedItem).Content.ToString())
+                            case ">=":
                             {
-                                case ">=":
-                                    {
-                                        using (var context = new AutoServiceEntities())
+                                using (var context = new AutoServiceEntities())
 
-                                        {
-                                            var query =
-                                                context.AutoOrder.Where(
-                                                    x =>
-                                                        (x.EnginePower >= value) || (x.EnginePower == null));
-                                            FillDataGrid(query);
-                                        }
-                                        break;
-                                    }
-                                case "<=":
-                                    {
-                                        using (var context = new AutoServiceEntities())
-
-                                        {
-                                            var query =
-                                                context.AutoOrder.Where(
-                                                    x =>
-                                                        (x.EnginePower <= value) || (x.EnginePower == null));
-                                            FillDataGrid(query);
-                                        }
-                                        break;
-                                    }
-                                case "=":
-                                    {
-                                        using (var context = new AutoServiceEntities())
-
-                                        {
-                                            var query =
-                                                context.AutoOrder.Where(
-                                                    x =>
-                                                        x.EnginePower == value);
-                                            FillDataGrid(query);
-                                        }
-                                        break;
-                                    }
-                                case ">":
-                                    {
-                                        using (var context = new AutoServiceEntities())
-
-                                        {
-                                            var query =
-                                                context.AutoOrder.Where(
-                                                    x =>
-                                                        (x.EnginePower > value) || (x.EnginePower == null));
-                                            FillDataGrid(query);
-                                        }
-                                        break;
-                                    }
-                                case "<":
-                                    {
-                                        using (var context = new AutoServiceEntities())
-
-                                        {
-                                            var query =
-                                                context.AutoOrder.Where(
-                                                    x =>
-                                                        (x.EnginePower < value) || (x.EnginePower == null));
-                                            FillDataGrid(query);
-                                        }
-                                        break;
-                                    }
+                                {
+                                    var query =
+                                        context.WorksAutoOrder.Where(
+                                            x =>
+                                                (x.WorksFinish >= date) || (x.WorksFinish == null));
+                                    FillDataGrid(query);
+                                }
+                                break;
                             }
-                            return;
-                        }
-                        if (((ComboBoxItem) columnFilterComboBox.SelectedItem).Content.ToString() == "Год выпуска")
-                        {
-                            if (value < 1930 || value > Convert.ToInt16(DateTime.Now.Date.Year))
-                                return;
-                            _isFiltered = true;
-                            switch (((ComboBoxItem)numericValueFilterComboBox.SelectedItem).Content.ToString())
+                            case "<=":
                             {
-                                case ">=":
-                                    {
-                                        using (var context = new AutoServiceEntities())
+                                using (var context = new AutoServiceEntities())
 
-                                        {
-                                            var query =
-                                                context.AutoOrder.Where(
-                                                    x =>
-                                                        x.YearMade >= value);
-                                            FillDataGrid(query);
-                                        }
-                                        break;
-                                    }
-                                case "<=":
-                                    {
-                                        using (var context = new AutoServiceEntities())
-
-                                        {
-                                            var query =
-                                                context.AutoOrder.Where(
-                                                    x =>
-                                                        x.YearMade <= value);
-                                            FillDataGrid(query);
-                                        }
-                                        break;
-                                    }
-                                case "=":
-                                    {
-                                        using (var context = new AutoServiceEntities())
-
-                                        {
-                                            var query =
-                                                context.AutoOrder.Where(
-                                                    x =>
-                                                        x.YearMade == value);
-                                            FillDataGrid(query);
-                                        }
-                                        break;
-                                    }
-                                case ">":
-                                    {
-                                        using (var context = new AutoServiceEntities())
-
-                                        {
-                                            var query =
-                                                context.AutoOrder.Where(
-                                                    x =>
-                                                       x.YearMade > value);
-                                            FillDataGrid(query);
-                                        }
-                                        break;
-                                    }
-                                case "<":
-                                    {
-                                        using (var context = new AutoServiceEntities())
-
-                                        {
-                                            var query =
-                                                context.AutoOrder.Where(
-                                                    x =>
-                                                        x.YearMade < value);
-                                            FillDataGrid(query);
-                                        }
-                                        break;
-                                    }
+                                {
+                                    var query =
+                                        context.WorksAutoOrder.Where(
+                                            x =>
+                                                (x.WorksFinish <= date) || (x.WorksFinish == null));
+                                    FillDataGrid(query);
+                                }
+                                break;
                             }
-                            return;
-                        }
-                        if (((ComboBoxItem)columnFilterComboBox.SelectedItem).Content.ToString() == "Цена")
-                        {
-                            _isFiltered = true;
-                            switch (((ComboBoxItem)numericValueFilterComboBox.SelectedItem).Content.ToString())
+                            case "=":
                             {
-                                case ">=":
-                                    {
-                                        using (var context = new AutoServiceEntities())
+                                using (var context = new AutoServiceEntities())
 
-                                        {
-                                            var query =
-                                                context.AutoOrder.Where(
-                                                    x =>
-                                                        x.WorksPrice >= value);
-                                            FillDataGrid(query);
-                                        }
-                                        break;
-                                    }
-                                case "<=":
-                                    {
-                                        using (var context = new AutoServiceEntities())
+                                {
+                                    var query =
+                                        context.WorksAutoOrder.Where(
+                                            x =>
+                                                DbFunctions.TruncateTime(x.WorksFinish) == date.Date);
+                                    FillDataGrid(query);
+                                }
+                                break;
+                            }
+                            case ">":
+                            {
+                                using (var context = new AutoServiceEntities())
 
-                                        {
-                                            var query =
-                                                context.AutoOrder.Where(
-                                                    x =>
-                                                        x.WorksPrice <= value);
-                                            FillDataGrid(query);
-                                        }
-                                        break;
-                                    }
-                                case "=":
-                                    {
-                                        using (var context = new AutoServiceEntities())
+                                {
+                                    var query =
+                                        context.WorksAutoOrder.Where(
+                                            x =>
+                                                (DbFunctions.TruncateTime(x.WorksStart) > date.Date) || (x.WorksFinish == null));
+                                    FillDataGrid(query);
+                                }
+                                break;
+                            }
+                            case "<":
+                            {
+                                using (var context = new AutoServiceEntities())
 
-                                        {
-                                            var query =
-                                                context.AutoOrder.Where(
-                                                    x =>
-                                                        x.WorksPrice == value);
-                                            FillDataGrid(query);
-                                        }
-                                        break;
-                                    }
-                                case ">":
-                                    {
-                                        using (var context = new AutoServiceEntities())
-
-                                        {
-                                            var query =
-                                                context.AutoOrder.Where(
-                                                    x =>
-                                                       x.WorksPrice > value);
-                                            FillDataGrid(query);
-                                        }
-                                        break;
-                                    }
-                                case "<":
-                                    {
-                                        using (var context = new AutoServiceEntities())
-
-                                        {
-                                            var query =
-                                                context.AutoOrder.Where(
-                                                    x =>
-                                                        x.WorksPrice < value);
-                                            FillDataGrid(query);
-                                        }
-                                        break;
-                                    }
+                                {
+                                    var query =
+                                        context.WorksAutoOrder.Where(
+                                            x =>
+                                                (DbFunctions.TruncateTime(x.WorksStart) < date.Date) || (x.WorksFinish == null));
+                                    FillDataGrid(query);
+                                }
+                                break;
                             }
                         }
-
+                        return true;
                     }
                 }
+                int value;
+                if (!int.TryParse(NumericValueTextBox.Text, out value))
+                    return false;
+
+                        
+                if (((ComboBoxItem) ColumnFilterComboBox.SelectedItem).Content.ToString() == "Мощность двигателя")
+                {
+                    _isFiltered = true;
+                    switch (((ComboBoxItem)NumericValueFilterComboBox.SelectedItem).Content.ToString())
+                    {
+                        case ">=":
+                        {
+                            using (var context = new AutoServiceEntities())
+
+                            {
+                                var query =
+                                    context.WorksAutoOrder.Where(
+                                        x =>
+                                            (x.EnginePower >= value) || (x.EnginePower == null));
+                                FillDataGrid(query);
+                            }
+                            break;
+                        }
+                        case "<=":
+                        {
+                            using (var context = new AutoServiceEntities())
+
+                            {
+                                var query =
+                                    context.WorksAutoOrder.Where(
+                                        x =>
+                                            (x.EnginePower <= value) || (x.EnginePower == null));
+                                FillDataGrid(query);
+                            }
+                            break;
+                        }
+                        case "=":
+                        {
+                            using (var context = new AutoServiceEntities())
+
+                            {
+                                var query =
+                                    context.WorksAutoOrder.Where(
+                                        x =>
+                                            x.EnginePower == value);
+                                FillDataGrid(query);
+                            }
+                            break;
+                        }
+                        case ">":
+                        {
+                            using (var context = new AutoServiceEntities())
+
+                            {
+                                var query =
+                                    context.WorksAutoOrder.Where(
+                                        x =>
+                                            (x.EnginePower > value) || (x.EnginePower == null));
+                                FillDataGrid(query);
+                            }
+                            break;
+                        }
+                        case "<":
+                        {
+                            using (var context = new AutoServiceEntities())
+
+                            {
+                                var query =
+                                    context.WorksAutoOrder.Where(
+                                        x =>
+                                            (x.EnginePower < value) || (x.EnginePower == null));
+                                FillDataGrid(query);
+                            }
+                            break;
+                        }
+                    }
+                    return true;
+                }
+                if (((ComboBoxItem) ColumnFilterComboBox.SelectedItem).Content.ToString() == "Год выпуска")
+                {
+                    if (value < 1930 || value > Convert.ToInt16(DateTime.Now.Date.Year))
+                        return false;
+                    _isFiltered = true;
+                    switch (((ComboBoxItem)NumericValueFilterComboBox.SelectedItem).Content.ToString())
+                    {
+                        case ">=":
+                        {
+                            using (var context = new AutoServiceEntities())
+
+                            {
+                                var query =
+                                    context.WorksAutoOrder.Where(
+                                        x =>
+                                            x.YearMade >= value);
+                                FillDataGrid(query);
+                            }
+                            break;
+                        }
+                        case "<=":
+                        {
+                            using (var context = new AutoServiceEntities())
+
+                            {
+                                var query =
+                                    context.WorksAutoOrder.Where(
+                                        x =>
+                                            x.YearMade <= value);
+                                FillDataGrid(query);
+                            }
+                            break;
+                        }
+                        case "=":
+                        {
+                            using (var context = new AutoServiceEntities())
+
+                            {
+                                var query =
+                                    context.WorksAutoOrder.Where(
+                                        x =>
+                                            x.YearMade == value);
+                                FillDataGrid(query);
+                            }
+                            break;
+                        }
+                        case ">":
+                        {
+                            using (var context = new AutoServiceEntities())
+
+                            {
+                                var query =
+                                    context.WorksAutoOrder.Where(
+                                        x =>
+                                            x.YearMade > value);
+                                FillDataGrid(query);
+                            }
+                            break;
+                        }
+                        case "<":
+                        {
+                            using (var context = new AutoServiceEntities())
+
+                            {
+                                var query =
+                                    context.WorksAutoOrder.Where(
+                                        x =>
+                                            x.YearMade < value);
+                                FillDataGrid(query);
+                            }
+                            break;
+                        }
+                    }
+                    return true;
+                }
+                if (((ComboBoxItem)ColumnFilterComboBox.SelectedItem).Content.ToString() == "Цена")
+                {
+                    _isFiltered = true;
+                    switch (((ComboBoxItem)NumericValueFilterComboBox.SelectedItem).Content.ToString())
+                    {
+                        case ">=":
+                        {
+                            using (var context = new AutoServiceEntities())
+
+                            {
+                                var query =
+                                    context.WorksAutoOrder.Where(
+                                        x =>
+                                            x.WorksPrice >= value);
+                                FillDataGrid(query);
+                            }
+                            break;
+                        }
+                        case "<=":
+                        {
+                            using (var context = new AutoServiceEntities())
+
+                            {
+                                var query =
+                                    context.WorksAutoOrder.Where(
+                                        x =>
+                                            x.WorksPrice <= value);
+                                FillDataGrid(query);
+                            }
+                            break;
+                        }
+                        case "=":
+                        {
+                            using (var context = new AutoServiceEntities())
+
+                            {
+                                var query =
+                                    context.WorksAutoOrder.Where(
+                                        x =>
+                                            x.WorksPrice == value);
+                                FillDataGrid(query);
+                            }
+                            break;
+                        }
+                        case ">":
+                        {
+                            using (var context = new AutoServiceEntities())
+
+                            {
+                                var query =
+                                    context.WorksAutoOrder.Where(
+                                        x =>
+                                            x.WorksPrice > value);
+                                FillDataGrid(query);
+                            }
+                            break;
+                        }
+                        case "<":
+                        {
+                            using (var context = new AutoServiceEntities())
+
+                            {
+                                var query =
+                                    context.WorksAutoOrder.Where(
+                                        x =>
+                                            x.WorksPrice < value);
+                                FillDataGrid(query);
+                            }
+                            break;
+                        }
+                    }
+
+                    return true;
+                }
             }
+            return false;
         }
 
-        private void FillDataGrid(IQueryable<AutoOrder> query)
+        private void FillDataGrid(IQueryable<WorksAutoOrder> query)
         {
             var totalAmountOfRows = query.Count();
             _numberOfPages = totalAmountOfRows%_rowCount != 0
@@ -831,70 +835,78 @@ namespace AutoServiceManager
                     .Skip(_currentPage*_rowCount)
                     .Take(_rowCount)
                     .ToList();
-            pageNumberTextBlock.Text = "Страница " + (_currentPage + 1) + " из " +
+            PageNumberTextBlock.Text = "Страница " + (_currentPage + 1) + " из " +
                                        _numberOfPages;
         }
 
-        private void columnFilterComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ColumnFilterComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            numericValueTextBox.Text = string.Empty;
-            numericValueFilterComboBox.SelectedItem = null;
-            stringValueFilterComboBox.SelectedItem = null;
-            if(columnFilterComboBox.SelectedItem != null)
-                if (((ComboBoxItem)columnFilterComboBox.SelectedItem).Content.ToString() == "Марка" ||
-                    ((ComboBoxItem)columnFilterComboBox.SelectedItem).Content.ToString() == "Модель" ||
-                    ((ComboBoxItem)columnFilterComboBox.SelectedItem).Content.ToString() == "Тип трансмиссии")
+            NumericValueTextBox.Text = string.Empty;
+            NumericValueFilterComboBox.SelectedItem = null;
+            StringValueFilterComboBox.SelectedItem = null;
+            if(ColumnFilterComboBox.SelectedItem != null)
+                if (((ComboBoxItem)ColumnFilterComboBox.SelectedItem).Content.ToString() == "Марка" ||
+                    ((ComboBoxItem)ColumnFilterComboBox.SelectedItem).Content.ToString() == "Модель" ||
+                    ((ComboBoxItem)ColumnFilterComboBox.SelectedItem).Content.ToString() == "Тип трансмиссии")
                 {
-                    numericValueFilterComboBox.Visibility = Visibility.Hidden;
-                    numericValueTextBox.Visibility = Visibility.Hidden;
-                    stringValueFilterComboBox.Visibility = Visibility.Visible;
+                    NumericValueFilterComboBox.Visibility = Visibility.Hidden;
+                    NumericValueTextBox.Visibility = Visibility.Hidden;
+                    StringValueFilterComboBox.Visibility = Visibility.Visible;
                     var context = new AutoServiceEntities();
-                    switch (((ComboBoxItem)columnFilterComboBox.SelectedItem).Content.ToString())
+                    switch (((ComboBoxItem)ColumnFilterComboBox.SelectedItem).Content.ToString())
                     {
                         case "Марка":
-                            stringValueFilterComboBox.ItemsSource =
-                                context.AutoOrder.Select(x=>x.CarBrand).Distinct().ToList();
+                            StringValueFilterComboBox.ItemsSource =
+                                context.WorksAutoOrder.Select(x=>x.CarBrand).Distinct().ToList();
                             break;
                         case "Модель":
-                            stringValueFilterComboBox.ItemsSource =
-                                context.AutoOrder.Select(x => x.CarModel).Distinct().ToList();
+                            StringValueFilterComboBox.ItemsSource =
+                                context.WorksAutoOrder.Select(x => x.CarModel).Distinct().ToList();
                             break;
                         case "Тип трансмиссии":
-                            stringValueFilterComboBox.ItemsSource =
-                                context.AutoOrder.Select(x => x.TransmissionType).Distinct().ToList();
+                            StringValueFilterComboBox.ItemsSource =
+                                context.WorksAutoOrder.Select(x => x.TransmissionType).Distinct().ToList();
                             break;
                     }
                 }
                 else
                 {
-                    numericValueFilterComboBox.Visibility = Visibility.Visible;
-                    numericValueTextBox.Visibility = Visibility.Visible;
-                    stringValueFilterComboBox.Visibility = Visibility.Hidden;
+                    NumericValueFilterComboBox.Visibility = Visibility.Visible;
+                    NumericValueTextBox.Visibility = Visibility.Visible;
+                    StringValueFilterComboBox.Visibility = Visibility.Hidden;
                 }
         }
 
-        private void resetButton_Copy_Click(object sender, RoutedEventArgs e)
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
             if (_isFiltered)
             {
                 _isFiltered = false;
+                _currentPage = 0;
+                ColumnFilterComboBox.SelectedItem = null;
+                StringValueFilterComboBox.SelectedItem = null;
+                NumericValueTextBox.Text = string.Empty;
+                NumericValueFilterComboBox.SelectedItem = string.Empty;
                 FillDataGrid();
                 return;
             }
             if (_isSearchAccomplished)
             {
                 _isSearchAccomplished = false;
+                SearchComboBox.SelectedItem = null;
+                SearchTextBox.Text = string.Empty;
+                _currentPage = 0;
                 FillDataGrid();
             }
         }
 
-        private void searchButton_Click(object sender, RoutedEventArgs e)
+        private void CearchButton_Click(object sender, RoutedEventArgs e)
         {
-            columnFilterComboBox.SelectedItem = null;
-            numericValueTextBox.Text = string.Empty;
-            numericValueFilterComboBox.SelectedItem = null;
-            stringValueFilterComboBox.SelectedItem = null;
-            if (searchComboBox.SelectedItem == null || searchTextBox.Text == string.Empty)
+            ColumnFilterComboBox.SelectedItem = null;
+            NumericValueTextBox.Text = string.Empty;
+            NumericValueFilterComboBox.SelectedItem = null;
+            StringValueFilterComboBox.SelectedItem = null;
+            if (SearchComboBox.SelectedItem == null || SearchTextBox.Text == string.Empty)
                 return;
             _currentPage = 0;
             SearchThroughDataGrid();
@@ -903,40 +915,40 @@ namespace AutoServiceManager
 
         private void SearchThroughDataGrid()
         {
-            switch (((ComboBoxItem) searchComboBox.SelectedItem).Content.ToString())
+            switch (((ComboBoxItem) SearchComboBox.SelectedItem).Content.ToString())
             {
                 case "Марка":
                     using (var context = new AutoServiceEntities())
                     {
-                        var query = context.AutoOrder.Where(x => x.CarBrand.Contains(searchTextBox.Text));
+                        var query = context.WorksAutoOrder.Where(x => x.CarBrand.Contains(SearchTextBox.Text));
                         FillDataGrid(query);
                     }
                     break;
                 case "Модель":
                     using (var context = new AutoServiceEntities())
                     {
-                        var query = context.AutoOrder.Where(x => x.CarModel.Contains(searchTextBox.Text));
+                        var query = context.WorksAutoOrder.Where(x => x.CarModel.Contains(SearchTextBox.Text));
                         FillDataGrid(query);
                     }
                     break;
                 case "Наименование работ":
                     using (var context = new AutoServiceEntities())
                     {
-                        var query = context.AutoOrder.Where(x => x.WorksName.Contains(searchTextBox.Text));
+                        var query = context.WorksAutoOrder.Where(x => x.WorksName.Contains(SearchTextBox.Text));
                         FillDataGrid(query);
                     }
                     break;
             }
         }
 
-        private void searchComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void SearchComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (searchComboBox.SelectedItem == null)
+            if (SearchComboBox.SelectedItem == null)
                 return;
-            if (((ComboBoxItem)searchComboBox.SelectedItem).Content.ToString() == "Наименование работ")
-                searchComboBox.FontSize = 10;
+            if (((ComboBoxItem)SearchComboBox.SelectedItem).Content.ToString() == "Наименование работ")
+                SearchComboBox.FontSize = 10;
             else
-                searchComboBox.FontSize = 12;
+                SearchComboBox.FontSize = 12;
             
         }
     }

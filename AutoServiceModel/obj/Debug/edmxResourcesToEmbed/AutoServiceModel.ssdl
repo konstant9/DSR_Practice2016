@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Хранилище AutoServiceModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Automobiles">
+    <Key>
+      <PropertyRef Name="AutoID" />
+    </Key>
+    <Property Name="AutoID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CarBrand" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="CarModel" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="YearMade" Type="int" Nullable="false" />
+    <Property Name="TransmissionType" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="EnginePower" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Customers">
+    <Key>
+      <PropertyRef Name="CustomerID" />
+    </Key>
+    <Property Name="CustomerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Surname" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="Patronymic" Type="varchar" MaxLength="255" />
+    <Property Name="Birthday" Type="date" />
+    <Property Name="Phone" Type="varchar" MaxLength="12" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Orders">
+    <Key>
+      <PropertyRef Name="OrderID" />
+    </Key>
+    <Property Name="OrderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="WorksStart" Type="datetime" Nullable="false" />
+    <Property Name="WorksFinish" Type="datetime" />
+    <Property Name="WorksPrice" Type="int" Nullable="false" />
+    <Property Name="CustomerID" Type="int" Nullable="false" />
+    <Property Name="AutoID" Type="int" Nullable="false" />
+    <Property Name="WorksID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Works">
+    <Key>
+      <PropertyRef Name="WorksID" />
+    </Key>
+    <Property Name="WorksID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="WorksName" Type="varchar" MaxLength="100" Nullable="false" />
+  </EntityType>
+  <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "C:\USERS\KONST\DESKTOP\AUTOSERVICEPROJECT\AUTOSERVICEMODEL\AUTOSERVICE.MDF.dbo.WorksAutoOrder" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+  <EntityType Name="WorksAutoOrder">
+    <Key>
+      <PropertyRef Name="OrderID" />
+      <PropertyRef Name="WorksStart" />
+      <PropertyRef Name="WorksPrice" />
+    </Key>
+    <Property Name="OrderID" Type="int" Nullable="false" />
+    <Property Name="CarBrand" Type="varchar" MaxLength="100" />
+    <Property Name="CarModel" Type="varchar" MaxLength="100" />
+    <Property Name="TransmissionType" Type="varchar" MaxLength="10" />
+    <Property Name="EnginePower" Type="int" />
+    <Property Name="YearMade" Type="int" />
+    <Property Name="WorksName" Type="varchar" MaxLength="100" />
+    <Property Name="WorksStart" Type="datetime" Nullable="false" />
+    <Property Name="WorksFinish" Type="datetime" />
+    <Property Name="WorksPrice" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="fkAutomobilesOrders">
+    <End Role="Automobiles" Type="Self.Automobiles" Multiplicity="1" />
+    <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Automobiles">
+        <PropertyRef Name="AutoID" />
+      </Principal>
+      <Dependent Role="Orders">
+        <PropertyRef Name="AutoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fkCustomersOrders">
+    <End Role="Customers" Type="Self.Customers" Multiplicity="1" />
+    <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customers">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="Orders">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fkWorksOrders">
+    <End Role="Works" Type="Self.Works" Multiplicity="1" />
+    <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Works">
+        <PropertyRef Name="WorksID" />
+      </Principal>
+      <Dependent Role="Orders">
+        <PropertyRef Name="WorksID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Хранилище AutoServiceModelContainer">
+    <EntitySet Name="Automobiles" EntityType="Self.Automobiles" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Works" EntityType="Self.Works" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="WorksAutoOrder" EntityType="Self.WorksAutoOrder" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [WorksAutoOrder].[OrderID] AS [OrderID], 
+    [WorksAutoOrder].[CarBrand] AS [CarBrand], 
+    [WorksAutoOrder].[CarModel] AS [CarModel], 
+    [WorksAutoOrder].[TransmissionType] AS [TransmissionType], 
+    [WorksAutoOrder].[EnginePower] AS [EnginePower], 
+    [WorksAutoOrder].[YearMade] AS [YearMade], 
+    [WorksAutoOrder].[WorksName] AS [WorksName], 
+    [WorksAutoOrder].[WorksStart] AS [WorksStart], 
+    [WorksAutoOrder].[WorksFinish] AS [WorksFinish], 
+    [WorksAutoOrder].[WorksPrice] AS [WorksPrice]
+    FROM [dbo].[WorksAutoOrder] AS [WorksAutoOrder]</DefiningQuery>
+    </EntitySet>
+    <AssociationSet Name="fkAutomobilesOrders" Association="Self.fkAutomobilesOrders">
+      <End Role="Automobiles" EntitySet="Automobiles" />
+      <End Role="Orders" EntitySet="Orders" />
+    </AssociationSet>
+    <AssociationSet Name="fkCustomersOrders" Association="Self.fkCustomersOrders">
+      <End Role="Customers" EntitySet="Customers" />
+      <End Role="Orders" EntitySet="Orders" />
+    </AssociationSet>
+    <AssociationSet Name="fkWorksOrders" Association="Self.fkWorksOrders">
+      <End Role="Works" EntitySet="Works" />
+      <End Role="Orders" EntitySet="Orders" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

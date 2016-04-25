@@ -66,26 +66,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Automobiles.cs">
-      <DependentUpon>AutoServiceModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="AutoOrder.cs">
-      <DependentUpon>AutoServiceModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="AutoServiceModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AutoServiceModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Customers.cs">
-      <DependentUpon>AutoServiceModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Orders.cs">
-      <DependentUpon>AutoServiceModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="sysdiagrams.cs">
-      <DependentUpon>AutoServiceModel.tt</DependentUpon>
-    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -93,16 +73,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="AutoServiceModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AutoServiceModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="AutoServiceModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AutoServiceModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -127,13 +97,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EntityDeploy Include="AutoServiceModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>AutoServiceModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="AutoServiceModel.edmx.diagram">
-      <DependentUpon>AutoServiceModel.edmx</DependentUpon>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -148,16 +111,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AutoServiceModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>AutoServiceModel.edmx</DependentUpon>
-      <LastGenOutput>AutoServiceModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="AutoServiceModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>AutoServiceModel.edmx</DependentUpon>
-      <LastGenOutput>AutoServiceModel.cs</LastGenOutput>
-    </Content>
+    <ProjectReference Include="..\AutoServiceModel\AutoServiceModel.csproj">
+      <Project>{dcd923a9-08ea-4f54-900f-f5bd20252bbd}</Project>
+      <Name>AutoServiceModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

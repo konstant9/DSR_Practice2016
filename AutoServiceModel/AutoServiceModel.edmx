@@ -1,0 +1,350 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище AutoServiceModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Automobiles">
+          <Key>
+            <PropertyRef Name="AutoID" />
+          </Key>
+          <Property Name="AutoID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CarBrand" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="CarModel" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="YearMade" Type="int" Nullable="false" />
+          <Property Name="TransmissionType" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="EnginePower" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Customers">
+          <Key>
+            <PropertyRef Name="CustomerID" />
+          </Key>
+          <Property Name="CustomerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Surname" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Patronymic" Type="varchar" MaxLength="255" />
+          <Property Name="Birthday" Type="date" />
+          <Property Name="Phone" Type="varchar" MaxLength="12" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Orders">
+          <Key>
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="OrderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WorksStart" Type="datetime" Nullable="false" />
+          <Property Name="WorksFinish" Type="datetime" />
+          <Property Name="WorksPrice" Type="int" Nullable="false" />
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="AutoID" Type="int" Nullable="false" />
+          <Property Name="WorksID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Works">
+          <Key>
+            <PropertyRef Name="WorksID" />
+          </Key>
+          <Property Name="WorksID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WorksName" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "C:\USERS\KONST\DESKTOP\AUTOSERVICEPROJECT\AUTOSERVICEMODEL\AUTOSERVICE.MDF.dbo.WorksAutoOrder" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="WorksAutoOrder">
+          <Key>
+            <PropertyRef Name="OrderID" />
+            <PropertyRef Name="WorksStart" />
+            <PropertyRef Name="WorksPrice" />
+          </Key>
+          <Property Name="OrderID" Type="int" Nullable="false" />
+          <Property Name="CarBrand" Type="varchar" MaxLength="100" />
+          <Property Name="CarModel" Type="varchar" MaxLength="100" />
+          <Property Name="TransmissionType" Type="varchar" MaxLength="10" />
+          <Property Name="EnginePower" Type="int" />
+          <Property Name="YearMade" Type="int" />
+          <Property Name="WorksName" Type="varchar" MaxLength="100" />
+          <Property Name="WorksStart" Type="datetime" Nullable="false" />
+          <Property Name="WorksFinish" Type="datetime" />
+          <Property Name="WorksPrice" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="fkAutomobilesOrders">
+          <End Role="Automobiles" Type="Self.Automobiles" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Automobiles">
+              <PropertyRef Name="AutoID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="AutoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fkCustomersOrders">
+          <End Role="Customers" Type="Self.Customers" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customers">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fkWorksOrders">
+          <End Role="Works" Type="Self.Works" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Works">
+              <PropertyRef Name="WorksID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="WorksID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище AutoServiceModelContainer">
+          <EntitySet Name="Automobiles" EntityType="Self.Automobiles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Works" EntityType="Self.Works" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WorksAutoOrder" EntityType="Self.WorksAutoOrder" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [WorksAutoOrder].[OrderID] AS [OrderID], 
+    [WorksAutoOrder].[CarBrand] AS [CarBrand], 
+    [WorksAutoOrder].[CarModel] AS [CarModel], 
+    [WorksAutoOrder].[TransmissionType] AS [TransmissionType], 
+    [WorksAutoOrder].[EnginePower] AS [EnginePower], 
+    [WorksAutoOrder].[YearMade] AS [YearMade], 
+    [WorksAutoOrder].[WorksName] AS [WorksName], 
+    [WorksAutoOrder].[WorksStart] AS [WorksStart], 
+    [WorksAutoOrder].[WorksFinish] AS [WorksFinish], 
+    [WorksAutoOrder].[WorksPrice] AS [WorksPrice]
+    FROM [dbo].[WorksAutoOrder] AS [WorksAutoOrder]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="fkAutomobilesOrders" Association="Self.fkAutomobilesOrders">
+            <End Role="Automobiles" EntitySet="Automobiles" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="fkCustomersOrders" Association="Self.fkCustomersOrders">
+            <End Role="Customers" EntitySet="Customers" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="fkWorksOrders" Association="Self.fkWorksOrders">
+            <End Role="Works" EntitySet="Works" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="AutoServiceModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Automobiles">
+          <Key>
+            <PropertyRef Name="AutoID" />
+          </Key>
+          <Property Name="AutoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CarBrand" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CarModel" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="YearMade" Type="Int32" Nullable="false" />
+          <Property Name="TransmissionType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EnginePower" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Orders" Relationship="Self.fkAutomobilesOrders" FromRole="Automobiles" ToRole="Orders" />
+        </EntityType>
+        <EntityType Name="Customers">
+          <Key>
+            <PropertyRef Name="CustomerID" />
+          </Key>
+          <Property Name="CustomerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Surname" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Patronymic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Birthday" Type="DateTime" Precision="0" />
+          <Property Name="Phone" Type="String" MaxLength="12" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Orders" Relationship="Self.fkCustomersOrders" FromRole="Customers" ToRole="Orders" />
+        </EntityType>
+        <EntityType Name="Orders">
+          <Key>
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="OrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WorksStart" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="WorksFinish" Type="DateTime" Precision="3" />
+          <Property Name="WorksPrice" Type="Int32" Nullable="false" />
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <Property Name="AutoID" Type="Int32" Nullable="false" />
+          <Property Name="WorksID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Automobiles" Relationship="Self.fkAutomobilesOrders" FromRole="Orders" ToRole="Automobiles" />
+          <NavigationProperty Name="Customers" Relationship="Self.fkCustomersOrders" FromRole="Orders" ToRole="Customers" />
+          <NavigationProperty Name="Works" Relationship="Self.fkWorksOrders" FromRole="Orders" ToRole="Works" />
+        </EntityType>
+        <EntityType Name="Works">
+          <Key>
+            <PropertyRef Name="WorksID" />
+          </Key>
+          <Property Name="WorksID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WorksName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Orders" Relationship="Self.fkWorksOrders" FromRole="Works" ToRole="Orders" />
+        </EntityType>
+        <EntityType Name="WorksAutoOrder">
+          <Key>
+            <PropertyRef Name="OrderID" />
+            <PropertyRef Name="WorksStart" />
+            <PropertyRef Name="WorksPrice" />
+          </Key>
+          <Property Name="OrderID" Type="Int32" Nullable="false" />
+          <Property Name="CarBrand" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CarModel" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="TransmissionType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="EnginePower" Type="Int32" />
+          <Property Name="YearMade" Type="Int32" />
+          <Property Name="WorksName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="WorksStart" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="WorksFinish" Type="DateTime" Precision="3" />
+          <Property Name="WorksPrice" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="fkAutomobilesOrders">
+          <End Role="Automobiles" Type="Self.Automobiles" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Automobiles">
+              <PropertyRef Name="AutoID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="AutoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fkCustomersOrders">
+          <End Role="Customers" Type="Self.Customers" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customers">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fkWorksOrders">
+          <End Role="Works" Type="Self.Works" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Works">
+              <PropertyRef Name="WorksID" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="WorksID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="AutoServiceEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Automobiles" EntityType="Self.Automobiles" />
+          <EntitySet Name="Customers" EntityType="Self.Customers" />
+          <EntitySet Name="Orders" EntityType="Self.Orders" />
+          <EntitySet Name="Works" EntityType="Self.Works" />
+          <EntitySet Name="WorksAutoOrder" EntityType="Self.WorksAutoOrder" />
+          <AssociationSet Name="fkAutomobilesOrders" Association="Self.fkAutomobilesOrders">
+            <End Role="Automobiles" EntitySet="Automobiles" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="fkCustomersOrders" Association="Self.fkCustomersOrders">
+            <End Role="Customers" EntitySet="Customers" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="fkWorksOrders" Association="Self.fkWorksOrders">
+            <End Role="Works" EntitySet="Works" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище AutoServiceModelContainer" CdmEntityContainer="AutoServiceEntities">
+          <EntitySetMapping Name="Automobiles">
+            <EntityTypeMapping TypeName="AutoServiceModel.Automobiles">
+              <MappingFragment StoreEntitySet="Automobiles">
+                <ScalarProperty Name="AutoID" ColumnName="AutoID" />
+                <ScalarProperty Name="CarBrand" ColumnName="CarBrand" />
+                <ScalarProperty Name="CarModel" ColumnName="CarModel" />
+                <ScalarProperty Name="YearMade" ColumnName="YearMade" />
+                <ScalarProperty Name="TransmissionType" ColumnName="TransmissionType" />
+                <ScalarProperty Name="EnginePower" ColumnName="EnginePower" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="AutoServiceModel.Customers">
+              <MappingFragment StoreEntitySet="Customers">
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="Surname" ColumnName="Surname" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Patronymic" ColumnName="Patronymic" />
+                <ScalarProperty Name="Birthday" ColumnName="Birthday" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Orders">
+            <EntityTypeMapping TypeName="AutoServiceModel.Orders">
+              <MappingFragment StoreEntitySet="Orders">
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="WorksStart" ColumnName="WorksStart" />
+                <ScalarProperty Name="WorksFinish" ColumnName="WorksFinish" />
+                <ScalarProperty Name="WorksPrice" ColumnName="WorksPrice" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="AutoID" ColumnName="AutoID" />
+                <ScalarProperty Name="WorksID" ColumnName="WorksID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Works">
+            <EntityTypeMapping TypeName="AutoServiceModel.Works">
+              <MappingFragment StoreEntitySet="Works">
+                <ScalarProperty Name="WorksID" ColumnName="WorksID" />
+                <ScalarProperty Name="WorksName" ColumnName="WorksName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WorksAutoOrder">
+            <EntityTypeMapping TypeName="AutoServiceModel.WorksAutoOrder">
+              <MappingFragment StoreEntitySet="WorksAutoOrder">
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="CarBrand" ColumnName="CarBrand" />
+                <ScalarProperty Name="CarModel" ColumnName="CarModel" />
+                <ScalarProperty Name="TransmissionType" ColumnName="TransmissionType" />
+                <ScalarProperty Name="EnginePower" ColumnName="EnginePower" />
+                <ScalarProperty Name="YearMade" ColumnName="YearMade" />
+                <ScalarProperty Name="WorksName" ColumnName="WorksName" />
+                <ScalarProperty Name="WorksStart" ColumnName="WorksStart" />
+                <ScalarProperty Name="WorksFinish" ColumnName="WorksFinish" />
+                <ScalarProperty Name="WorksPrice" ColumnName="WorksPrice" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

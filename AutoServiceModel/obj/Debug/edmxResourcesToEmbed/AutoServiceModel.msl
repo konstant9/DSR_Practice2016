@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="Хранилище AutoServiceModelContainer" CdmEntityContainer="AutoServiceEntities">
+    <EntitySetMapping Name="Automobiles">
+      <EntityTypeMapping TypeName="AutoServiceModel.Automobiles">
+        <MappingFragment StoreEntitySet="Automobiles">
+          <ScalarProperty Name="AutoID" ColumnName="AutoID" />
+          <ScalarProperty Name="CarBrand" ColumnName="CarBrand" />
+          <ScalarProperty Name="CarModel" ColumnName="CarModel" />
+          <ScalarProperty Name="YearMade" ColumnName="YearMade" />
+          <ScalarProperty Name="TransmissionType" ColumnName="TransmissionType" />
+          <ScalarProperty Name="EnginePower" ColumnName="EnginePower" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Customers">
+      <EntityTypeMapping TypeName="AutoServiceModel.Customers">
+        <MappingFragment StoreEntitySet="Customers">
+          <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+          <ScalarProperty Name="Surname" ColumnName="Surname" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Patronymic" ColumnName="Patronymic" />
+          <ScalarProperty Name="Birthday" ColumnName="Birthday" />
+          <ScalarProperty Name="Phone" ColumnName="Phone" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Orders">
+      <EntityTypeMapping TypeName="AutoServiceModel.Orders">
+        <MappingFragment StoreEntitySet="Orders">
+          <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+          <ScalarProperty Name="WorksStart" ColumnName="WorksStart" />
+          <ScalarProperty Name="WorksFinish" ColumnName="WorksFinish" />
+          <ScalarProperty Name="WorksPrice" ColumnName="WorksPrice" />
+          <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+          <ScalarProperty Name="AutoID" ColumnName="AutoID" />
+          <ScalarProperty Name="WorksID" ColumnName="WorksID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Works">
+      <EntityTypeMapping TypeName="AutoServiceModel.Works">
+        <MappingFragment StoreEntitySet="Works">
+          <ScalarProperty Name="WorksID" ColumnName="WorksID" />
+          <ScalarProperty Name="WorksName" ColumnName="WorksName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="WorksAutoOrder">
+      <EntityTypeMapping TypeName="AutoServiceModel.WorksAutoOrder">
+        <MappingFragment StoreEntitySet="WorksAutoOrder">
+          <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+          <ScalarProperty Name="CarBrand" ColumnName="CarBrand" />
+          <ScalarProperty Name="CarModel" ColumnName="CarModel" />
+          <ScalarProperty Name="TransmissionType" ColumnName="TransmissionType" />
+          <ScalarProperty Name="EnginePower" ColumnName="EnginePower" />
+          <ScalarProperty Name="YearMade" ColumnName="YearMade" />
+          <ScalarProperty Name="WorksName" ColumnName="WorksName" />
+          <ScalarProperty Name="WorksStart" ColumnName="WorksStart" />
+          <ScalarProperty Name="WorksFinish" ColumnName="WorksFinish" />
+          <ScalarProperty Name="WorksPrice" ColumnName="WorksPrice" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
