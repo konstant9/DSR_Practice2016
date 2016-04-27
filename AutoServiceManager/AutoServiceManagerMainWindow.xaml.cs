@@ -377,21 +377,19 @@ namespace AutoServiceManager
         {
             SearchComboBox.SelectedItem = null;
             SearchTextBox.Text = string.Empty;
-            if (!FilterDataGrid())
-                return;
-            _currentPage = 0;
-            _isSearchAccomplished = false;
-
+            FilterDataGrid();
         }
 
-        private bool FilterDataGrid()
+        private void FilterDataGrid()
         {
-            if (ColumnFilterComboBox.SelectedItem == null) return false;
+            if (ColumnFilterComboBox.SelectedItem == null) return;
             if (StringValueFilterComboBox.Visibility == Visibility.Visible)
             {
-                if (StringValueFilterComboBox.SelectedItem == null) return false;
+                if (StringValueFilterComboBox.SelectedItem == null) return;
 
                 _isFiltered = true;
+                _currentPage = 0;
+                _isSearchAccomplished = false;
                 switch (((ComboBoxItem) ColumnFilterComboBox.SelectedItem).Content.ToString())
                 {
                     case "Марка":
@@ -438,15 +436,17 @@ namespace AutoServiceManager
             else
             {
                 if (NumericValueFilterComboBox.SelectedItem == null || NumericValueTextBox.Text == string.Empty)
-                    return false;
+                    return;
                 if (((ComboBoxItem) ColumnFilterComboBox.SelectedItem).Content.ToString() == "Время начала"
                     || ((ComboBoxItem) ColumnFilterComboBox.SelectedItem).Content.ToString() == "Время окончания")
                 {
                     DateTime date;
                     if (!DateTime.TryParse(NumericValueTextBox.Text, out date))
-                        return false;
+                        return;
 
                     _isFiltered = true;
+                    _currentPage = 0;
+                    _isSearchAccomplished = false;
                     if (((ComboBoxItem) ColumnFilterComboBox.SelectedItem).Content.ToString() == "Время начала")
                     {
                         switch (((ComboBoxItem) NumericValueFilterComboBox.SelectedItem).Content.ToString())
@@ -517,7 +517,7 @@ namespace AutoServiceManager
                                 break;
                             }
                         }
-                        return true;
+                        return;
                     }
                     else
                     {
@@ -589,17 +589,20 @@ namespace AutoServiceManager
                                 break;
                             }
                         }
-                        return true;
+                        return;
                     }
                 }
                 int value;
                 if (!int.TryParse(NumericValueTextBox.Text, out value))
-                    return false;
+                    return;
 
                         
                 if (((ComboBoxItem) ColumnFilterComboBox.SelectedItem).Content.ToString() == "Мощность двигателя")
                 {
+
                     _isFiltered = true;
+                    _currentPage = 0;
+                    _isSearchAccomplished = false;
                     switch (((ComboBoxItem)NumericValueFilterComboBox.SelectedItem).Content.ToString())
                     {
                         case ">=":
@@ -668,13 +671,15 @@ namespace AutoServiceManager
                             break;
                         }
                     }
-                    return true;
+                    return;
                 }
                 if (((ComboBoxItem) ColumnFilterComboBox.SelectedItem).Content.ToString() == "Год выпуска")
                 {
                     if (value < 1930 || value > Convert.ToInt16(DateTime.Now.Date.Year))
-                        return false;
+                        return;
                     _isFiltered = true;
+                    _currentPage = 0;
+                    _isSearchAccomplished = false;
                     switch (((ComboBoxItem)NumericValueFilterComboBox.SelectedItem).Content.ToString())
                     {
                         case ">=":
@@ -743,11 +748,13 @@ namespace AutoServiceManager
                             break;
                         }
                     }
-                    return true;
+                    return;
                 }
                 if (((ComboBoxItem)ColumnFilterComboBox.SelectedItem).Content.ToString() == "Цена")
                 {
                     _isFiltered = true;
+                    _currentPage = 0;
+                    _isSearchAccomplished = false;
                     switch (((ComboBoxItem)NumericValueFilterComboBox.SelectedItem).Content.ToString())
                     {
                         case ">=":
@@ -816,11 +823,8 @@ namespace AutoServiceManager
                             break;
                         }
                     }
-
-                    return true;
                 }
             }
-            return false;
         }
 
         private void FillDataGrid(IQueryable<WorksAutoOrder> query)
