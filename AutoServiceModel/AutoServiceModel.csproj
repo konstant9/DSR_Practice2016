@@ -87,6 +87,7 @@
     <Compile Include="Customers.cs">
       <DependentUpon>AutoServiceModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="OrderCustomer.cs" />
     <Compile Include="Orders.cs">
       <DependentUpon>AutoServiceModel.tt</DependentUpon>
     </Compile>

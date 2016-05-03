@@ -39,6 +39,16 @@
     <NavigationProperty Name="Customers" Relationship="Self.fkCustomersOrders" FromRole="Orders" ToRole="Customers" />
     <NavigationProperty Name="Works" Relationship="Self.fkWorksOrders" FromRole="Orders" ToRole="Works" />
   </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
   <EntityType Name="Works">
     <Key>
       <PropertyRef Name="WorksID" />
@@ -104,6 +114,7 @@
     <EntitySet Name="Automobiles" EntityType="Self.Automobiles" />
     <EntitySet Name="Customers" EntityType="Self.Customers" />
     <EntitySet Name="Orders" EntityType="Self.Orders" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
     <EntitySet Name="Works" EntityType="Self.Works" />
     <EntitySet Name="WorksAutoOrder" EntityType="Self.WorksAutoOrder" />
     <AssociationSet Name="fkAutomobilesOrders" Association="Self.fkAutomobilesOrders">

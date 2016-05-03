@@ -39,6 +39,16 @@
           <Property Name="AutoID" Type="int" Nullable="false" />
           <Property Name="WorksID" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
         <EntityType Name="Works">
           <Key>
             <PropertyRef Name="WorksID" />
@@ -47,7 +57,7 @@
           <Property Name="WorksName" Type="varchar" MaxLength="100" Nullable="false" />
         </EntityType>
         <!--Ошибки, обнаруженные при создании:
-предупреждение 6002: В таблице или представлении "C:\USERS\KONST\DESKTOP\AUTOSERVICEPROJECT\AUTOSERVICEMODEL\AUTOSERVICE.MDF.dbo.WorksAutoOrder" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+предупреждение 6002: В таблице или представлении "C:\USERS\KONST\DESKTOP\AUTOSERVICE\AUTOSERVICEMODEL\AUTOSERVICE.MDF.dbo.WorksAutoOrder" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
         <EntityType Name="WorksAutoOrder">
           <Key>
             <PropertyRef Name="OrderID" />
@@ -105,6 +115,7 @@
           <EntitySet Name="Automobiles" EntityType="Self.Automobiles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Works" EntityType="Self.Works" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WorksAutoOrder" EntityType="Self.WorksAutoOrder" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -177,6 +188,16 @@
           <NavigationProperty Name="Customers" Relationship="Self.fkCustomersOrders" FromRole="Orders" ToRole="Customers" />
           <NavigationProperty Name="Works" Relationship="Self.fkWorksOrders" FromRole="Orders" ToRole="Works" />
         </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
         <EntityType Name="Works">
           <Key>
             <PropertyRef Name="WorksID" />
@@ -242,6 +263,7 @@
           <EntitySet Name="Automobiles" EntityType="Self.Automobiles" />
           <EntitySet Name="Customers" EntityType="Self.Customers" />
           <EntitySet Name="Orders" EntityType="Self.Orders" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
           <EntitySet Name="Works" EntityType="Self.Works" />
           <EntitySet Name="WorksAutoOrder" EntityType="Self.WorksAutoOrder" />
           <AssociationSet Name="fkAutomobilesOrders" Association="Self.fkAutomobilesOrders">
@@ -297,6 +319,17 @@
                 <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
                 <ScalarProperty Name="AutoID" ColumnName="AutoID" />
                 <ScalarProperty Name="WorksID" ColumnName="WorksID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="AutoServiceModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

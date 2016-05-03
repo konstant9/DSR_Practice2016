@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoServiceManager", "AutoServiceManager.csproj", "{83C02F10-A564-4648-B73C-9694A2EC496E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoServiceManager", "AutoServiceManager.csproj", "{D2C4BE22-23A4-4B86-8CFD-0AF04A9350AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoServiceModel", "..\AutoServiceModel\AutoServiceModel.csproj", "{DCD923A9-08EA-4F54-900F-F5BD20252BBD}"
 EndProject
@@ -13,10 +13,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{83C02F10-A564-4648-B73C-9694A2EC496E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{83C02F10-A564-4648-B73C-9694A2EC496E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{83C02F10-A564-4648-B73C-9694A2EC496E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{83C02F10-A564-4648-B73C-9694A2EC496E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2C4BE22-23A4-4B86-8CFD-0AF04A9350AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2C4BE22-23A4-4B86-8CFD-0AF04A9350AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2C4BE22-23A4-4B86-8CFD-0AF04A9350AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2C4BE22-23A4-4B86-8CFD-0AF04A9350AF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DCD923A9-08EA-4F54-900F-F5BD20252BBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DCD923A9-08EA-4F54-900F-F5BD20252BBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCD923A9-08EA-4F54-900F-F5BD20252BBD}.Release|Any CPU.ActiveCfg = Release|Any CPU

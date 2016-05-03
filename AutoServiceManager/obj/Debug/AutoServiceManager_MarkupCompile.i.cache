@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\konst\Desktop\DSR_Practice2016\AutoServiceManager\obj\Debug\
+C:\Users\konst\Desktop\AutoService\AutoServiceManager\obj\Debug\
 AutoServiceManager
 none
 false
 DEBUG;TRACE
-C:\Users\konst\Desktop\DSR_Practice2016\AutoServiceManager\App.xaml
-1970171844
+C:\Users\konst\Desktop\AutoService\AutoServiceManager\App.xaml
+51902612572
 
-9235211883
-191334773631
-AutoServiceManagerMainWindow.xaml;
+212059825434
+24-449836207
+Views\AutoServiceManagerMainWindow.xaml;Views\CircleChart.xaml;Views\ColumnChart.xaml;Views\LinearChart.xaml;Views\StatisticsWindow.xaml;
 
-True
+False
 

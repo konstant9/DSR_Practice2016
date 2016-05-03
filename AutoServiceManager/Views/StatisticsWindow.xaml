@@ -1,0 +1,37 @@
+﻿<Window x:Class="AutoServiceManager.Views.StatisticsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AutoServiceManager.Views"
+        xmlns:viewModels="clr-namespace:AutoServiceManager.ViewModels"
+        xmlns:DV="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+        xmlns:DVC="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+        mc:Ignorable="d"
+        Title="StatisticsWindow" Height="480" Width="640" MinWidth="640" MinHeight="480">
+    <Window.DataContext>
+        <viewModels:StatisticsViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewModels:ColumnChartViewModel}">
+            <local:ColumnChart/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:CircleChartViewModel}">
+            <local:CircleChart/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:LinearChartViewModel}">
+            <local:LinearChart/>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <ContentControl Content="{Binding SelectedViewModel}"  Margin="0,124,-0.667,0.667">
+
+        </ContentControl>
+        <ComboBox x:Name="DiagramSelectComboBox" ItemsSource="{Binding ListOfDiagrams}" SelectedItem="{Binding DiagramSelectedItem}" HorizontalAlignment="Center" Margin="163,38,165.333,0" VerticalAlignment="Top" Width="305"/>
+        <ComboBox x:Name="StatisticsComboBox" ItemsSource="{Binding ListOfStatistics}" SelectedItem="{Binding StatisticsSelectedItem}" HorizontalAlignment="Center" Margin="163,65,165.333,0" VerticalAlignment="Top" Width="305"/>
+        <Button x:Name="ShowDiagramButton" Content="Построить диаграмму" Command="{Binding ShowDiagramCommand}" Margin="163,92,165.333,0" Width="305" Height="27" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="14
+                "/>
+        <TextBlock x:Name="StatisticsTextBlock" HorizontalAlignment="Center" TextAlignment="Center" Margin="10,10,10.333,0" Text="Выберите тип диаграммы и данные для анализа" VerticalAlignment="Top" FontSize="16
+                   " Width="613"/>
+    </Grid>
+</Window>
