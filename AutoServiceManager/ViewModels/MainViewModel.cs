@@ -833,7 +833,7 @@ namespace AutoServiceManager.ViewModels
                                         var query =
                                             context.WorksAutoOrder.Where(
                                                 x =>
-                                                    (DbFunctions.TruncateTime(x.WorksStart) > date.Date) || (x.WorksFinish == null));
+                                                    (DbFunctions.TruncateTime(x.WorksFinish) > date.Date) || (x.WorksFinish == null));
                                         FillDataGrid(query);
                                     }
                                     break;
@@ -846,7 +846,7 @@ namespace AutoServiceManager.ViewModels
                                         var query =
                                             context.WorksAutoOrder.Where(
                                                 x =>
-                                                    (DbFunctions.TruncateTime(x.WorksStart) < date.Date) || (x.WorksFinish == null));
+                                                    (DbFunctions.TruncateTime(x.WorksFinish) < date.Date) || (x.WorksFinish == null));
                                         FillDataGrid(query);
                                     }
                                     break;
