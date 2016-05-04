@@ -37,6 +37,13 @@ namespace AutoServiceManager.ViewModels
             "Количество заказов по ценовым категориям"
         };
 
+        public List<BaseChartViewModel> ListOfViewModels { get; set; } = new List<BaseChartViewModel>
+            {
+                new CircleChartViewModel(),
+                new ColumnChartViewModel(),
+                new LinearChartViewModel()
+            };
+
         private string _statisticsSelectedItem;
 
         public string StatisticsSelectedItem
@@ -52,9 +59,9 @@ namespace AutoServiceManager.ViewModels
             }
         }
 
-        private object _selectedViewModel;
+        private BaseChartViewModel _selectedViewModel;
 
-        public object SelectedViewModel
+        public BaseChartViewModel SelectedViewModel
         {
             get { return _selectedViewModel; }
             set
@@ -74,29 +81,29 @@ namespace AutoServiceManager.ViewModels
                 });
             }
         }
+        
 
         public void ShowDiagram()
         {
-            if (DiagramSelectedItem == null)
+            if (DiagramSelectedItem == null || StatisticsSelectedItem == null)
                 return;
-            /*if (StatisticsSelectedItem == null)
-                return;*/
             switch (DiagramSelectedItem)
             {
                 case "Столбчатая":
-                    SelectedViewModel = new ColumnChartViewModel();
+                    SelectedViewModel = ListOfViewModels[1];
+                    Mediator.Mediator.NotifyColleagues("ColumnDiagramStatistics", StatisticsSelectedItem);
                     break;
                 case "Круговая":
-                    SelectedViewModel = new CircleChartViewModel();
-                    //Mediator.Mediator.NotifyColleagues("CircleDiagramStatistics",StatisticsSelectedItem);
+                    SelectedViewModel = ListOfViewModels[0];
+                    Mediator.Mediator.NotifyColleagues("CircleDiagramStatistics", StatisticsSelectedItem);
                     break;
                 case "Линейная":
-                    SelectedViewModel = new LinearChartViewModel();
+                    SelectedViewModel = ListOfViewModels[2];
+                    Mediator.Mediator.NotifyColleagues("LinearDiagramStatistics", StatisticsSelectedItem);
                     break;
-            }
-                
-                
+            }   
         }
+
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
@@ -104,7 +111,7 @@ namespace AutoServiceManager.ViewModels
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
-#endregion
+        #endregion
 
 
     }

@@ -9,11 +9,8 @@
              xmlns:viewModels="clr-namespace:AutoServiceManager.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Control.DataContext>
-        <viewModels:ColumnChartViewModel/>
-    </Control.DataContext>
     <Grid>
-        <DVC:Chart Title="Колонки">
+        <DVC:Chart Title="{Binding DiagramTitle}">
             <DVC:Chart.LegendStyle>
                 <Style TargetType="DV:Legend">
                     <Setter Property="Width" Value="0"/>

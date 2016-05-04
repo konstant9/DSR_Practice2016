@@ -9,15 +9,12 @@
              xmlns:viewModels="clr-namespace:AutoServiceManager.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Control.DataContext>
-        <viewModels:CircleChartViewModel/>
-    </Control.DataContext>
+    
     <Grid>
-        <DVC:Chart>
+        <DVC:Chart Title="{Binding DiagramTitle}">
             <DVC:Chart.Series >
-                <DVC:PieSeries Title="Пирожок" ItemsSource="{Binding ListOfPoints}" IndependentValueBinding="{Binding Key}" DependentValueBinding="{Binding Value}" ></DVC:PieSeries>
+                <DVC:PieSeries ItemsSource="{Binding ListOfPoints}" IndependentValueBinding="{Binding Key}" DependentValueBinding="{Binding Value}" ></DVC:PieSeries>
             </DVC:Chart.Series>
-
         </DVC:Chart>
     </Grid>
 </UserControl>
