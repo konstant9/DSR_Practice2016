@@ -16,13 +16,15 @@ namespace AutoServiceModel
         public CustomerOrder(WorksAutoOrder worksAutoOrder)
         {
             Order = worksAutoOrder;
-            var context = new AutoServiceEntities();
-            var owner = context.Customers.Where(x => x.Orders.Any(y => y.OrderID == Order.OrderID)).ToList().First();
-            Name = owner.Name;
-            Surname = owner.Surname;
-            Patronymic = owner.Patronymic;
-            Birthday = owner.Birthday;
-            Phone = owner.Phone;
+            using (var context = new AutoServiceEntities())
+            {
+                var owner = context.Customers.Where(x => x.Orders.Any(y => y.OrderID == Order.OrderID)).ToList().First();
+                Name = owner.Name;
+                Surname = owner.Surname;
+                Patronymic = owner.Patronymic;
+                Birthday = owner.Birthday;
+                Phone = owner.Phone;
+            }
         }
 
         public static List<CustomerOrder> GetCustomerOrders(IEnumerable<WorksAutoOrder> worksAutoOrders)
