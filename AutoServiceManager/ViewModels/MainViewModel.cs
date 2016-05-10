@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using AutoServiceManager.Views;
@@ -165,6 +166,7 @@ namespace AutoServiceManager.ViewModels
 
         public List<string> SearchComboBoxItems { get; set; } = new List<string>
         {
+            "Номер заказа",
             "Марка",
             "Модель",
             "Наименование работ"
@@ -798,6 +800,13 @@ namespace AutoServiceManager.ViewModels
             {
                 switch (SearchComboBoxSelectedItem)
                 {
+                    case "Номер заказа":
+                        int orderID;
+                        if (!int.TryParse(SearchText, out orderID) || orderID<=0)
+                            return;
+                        _listOfOrders = context.WorksAutoOrder.Where(x => x.OrderID == orderID).ToList();
+                        FillDataGrid();
+                        break;
                     case "Марка":
                         _listOfOrders = context.WorksAutoOrder.Where(x => x.CarBrand.Contains(SearchText)).ToList();
                         FillDataGrid();
