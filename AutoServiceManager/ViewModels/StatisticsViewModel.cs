@@ -4,10 +4,8 @@ using System.Windows.Input;
 
 namespace AutoServiceManager.ViewModels
 {
-
     class StatisticsViewModel : INotifyPropertyChanged
     {
-
         public List<string> ListOfDiagrams { get; } = new List<string>
         {
             "Круговая",
@@ -16,7 +14,6 @@ namespace AutoServiceManager.ViewModels
         };
 
         private string _diagramSelectedItem;
-
         public string DiagramSelectedItem
         {
             get
@@ -45,7 +42,6 @@ namespace AutoServiceManager.ViewModels
             };
 
         private string _statisticsSelectedItem;
-
         public string StatisticsSelectedItem
         {
             get
@@ -60,7 +56,6 @@ namespace AutoServiceManager.ViewModels
         }
 
         private BaseChartViewModel _selectedViewModel;
-
         public BaseChartViewModel SelectedViewModel
         {
             get { return _selectedViewModel; }
@@ -82,7 +77,6 @@ namespace AutoServiceManager.ViewModels
             }
         }
         
-
         public void ShowDiagram()
         {
             if (DiagramSelectedItem == null || StatisticsSelectedItem == null)
@@ -105,12 +99,14 @@ namespace AutoServiceManager.ViewModels
         }
 
         #region INotifyPropertyChanged
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
+
         #endregion
 
 

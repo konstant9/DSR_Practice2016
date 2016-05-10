@@ -3,17 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AutoServiceManager"
         xmlns:viewModels="clr-namespace:AutoServiceManager.ViewModels"
-        xmlns:data="clr-namespace:System.Data;assembly=System.Data"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:attachedCommandBehavior="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
         mc:Ignorable="d"
-        Title="AutoServiceManager" Height="480" Width="800" MinHeight="480" MinWidth="800">
-
+        Title="АРМ Менеджера Автосервиса" Height="480" Width="800" MinHeight="480" MinWidth="800">
     <Window.DataContext>
         <viewModels:MainViewModel/>
     </Window.DataContext>
+    <Window.InputBindings>
+        <MouseBinding MouseAction="LeftClick" Command="{Binding WindowClickCommand}"/>
+    </Window.InputBindings>
     <Window.Resources>
         <Style x:Key="NumericCells" TargetType="TextBlock">
             <Setter Property="TextAlignment" Value="Right"/>
@@ -32,14 +30,71 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-
     </Window.Resources>
+    <Grid x:Name="MainGrid" Focusable="False">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TabControl x:Name="FiltersTabControl" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Height="73" Margin="0,5,5,0" VerticalAlignment="Top" BorderBrush="#FFACACAC">
+            <TabItem Header="Сортировка">
+                <Grid Background="White">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock x:Name="SortForTextBlock" Grid.Column="0" HorizontalAlignment="Right" TextWrapping="Wrap" Text="Сортировать по:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <ComboBox x:Name="SortComboBox" Grid.Column="1" ItemsSource="{Binding SortComboBoxItems}" SelectedItem="{Binding SortComboBoxSelectedItem}" VerticalAlignment="Center" Margin="0,0,5,0" Width="150" Height="24"/>
+                    <ComboBox x:Name="SortDirectionComboBox" Grid.Column="2" ItemsSource="{Binding SortDirectionComboBoxItems}" SelectedItem="{Binding SortDirectionComboBoxSelectedItem}" VerticalAlignment="Center" Margin="0,0,5,0" Width="150" Height="24"/>
+                    <Button x:Name="SortButton" Grid.Column="3" Content="Сортировать" Command="{Binding SortClickCommand}" Cursor="Hand" VerticalAlignment="Center" Margin="0,0,5,0" Width="150" Height="24"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Фильтрация">
+                <Grid Background="White">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock x:Name="FilterTextBlock" Grid.Column="0" TextWrapping="Wrap" Text="Фильтровать по:" VerticalAlignment="Center"  HorizontalAlignment="Right" Margin="0,0,5,0"/>
+                    <ComboBox x:Name="ColumnFilterComboBox" Grid.Column="1" ItemsSource="{Binding ColumnFilterComboBoxItems}" SelectedItem="{Binding ColumnFilterComboBoxSelectedItem}" VerticalAlignment="Center" Margin="0,0,5,0" Width="150" Height="24"/>
+                    <ComboBox x:Name="StringValueFilterComboBox" Grid.Column="2" ItemsSource="{Binding StringColumnFilterComboBoxItems}" SelectedItem="{Binding StringColumnFilterComboBoxSelectedItem}" VerticalAlignment="Center" Margin="0,0,5,0" Width="150" Height="24"/>
+                    <TextBox x:Name="NumericValueTextBox" Grid.Column="2" Visibility="{Binding NumericFilterTextBoxVisibility}" Text="{Binding FilterText, Mode=TwoWay}" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" Height="24" Width="100"/>
+                    <ComboBox x:Name="NumericValueFilterComboBox" Grid.Column="2" Visibility="{Binding NumericFilterComboBoxVisibility}" ItemsSource="{Binding NumericColumnFilterComboBoxItems}" SelectedItem="{Binding NumericColumnFilterComboBoxSelectedItem}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0" Width="50" Height="24"/>
+                    <Button x:Name="FilterButton" Grid.Column="3" Content="Фильтровать" Command="{Binding FilterClickCommand}" Margin="0,0,5,0" VerticalAlignment="Center" Height="24" Cursor="Hand" Width="150"/>
 
-    <Grid x:Name="MainGrid" Focusable="False" Margin="0,0,0.333,2.667">
-        <Grid.InputBindings>
-            <MouseBinding Command="{Binding WindowClickCommand}" MouseAction="LeftClick"></MouseBinding>
-        </Grid.InputBindings>
-        <DataGrid x:Name="OrdersInfoDataGrid" ItemsSource="{Binding AutoServiceList}" Margin="11,125,9,35" RowHeaderWidth="0" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserAddRows="False" CanUserResizeRows="False" CanUserSortColumns="False" HeadersVisibility="Column" ColumnHeaderHeight="40" AutoGenerateColumns="False">
+                </Grid>
+            </TabItem>
+            <TabItem Header="Поиск">
+                <Grid Background="White">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock x:Name="SearchForTextBlock" Grid.Column="0" TextWrapping="Wrap" Text="Поиск по:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+                    <ComboBox x:Name="SearchComboBox" Grid.Column="1" ItemsSource="{Binding SearchComboBoxItems}" SelectedItem="{Binding SearchComboBoxSelectedItem}" VerticalAlignment="Center" Margin="0,0,5,0" Width="150" Height="24"/>
+                    <TextBox x:Name="SearchTextBox" Grid.Column="2" Text="{Binding SearchText, Mode=TwoWay}"  TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,5,0" Height="24" Width="150"/>
+                    <Button x:Name="SearchButton" Grid.Column="3" Content="Искать" Command="{Binding SearchClickCommand}"  Cursor="Hand" VerticalAlignment="Center" Margin="0,0,5,0" Height="24" Width="150"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="5">
+            <Button x:Name="ResetButton" Content="Сбросить фильтры" Command="{Binding ResetClickCommand}" VerticalAlignment="Top" Height="32" Cursor="Hand" HorizontalAlignment="Left" Width="117"/>
+            <Button x:Name="StatisticsButton" Command="{Binding StatisticsButtonClickCommand}" Content="Статистика" Margin="5,0,0,0" VerticalAlignment="Top" Height="32" Cursor="Hand" HorizontalAlignment="Left" Width="117"/>
+        </StackPanel>
+        <DataGrid x:Name="OrdersInfoDataGrid" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding CustomerOrdersList}" RowHeaderWidth="0" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserAddRows="False" CanUserResizeRows="False" CanUserSortColumns="False" HeadersVisibility="Column" ColumnHeaderHeight="40" AutoGenerateColumns="False" Margin="0,1,0.333,26.667" Grid.RowSpan="2">
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="ContentTemplate">
@@ -66,11 +121,6 @@
                             </StackPanel>
                         </Setter.Value>
                     </Setter>
-                    <!--
-                    <Setter Property="attachedCommandBehavior:CommandBehavior.Event" Value="MouseLeave"></Setter>
-                    <Setter Property="attachedCommandBehavior:CommandBehavior.Command" Value="{Binding Path=DataContext.CloseToolTipCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"/>
-                    <Setter Property="ToolTip.IsOpen" Value="{Binding Path=DataContext.IsToolTipOpen, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"></Setter>
-                    -->
                     <Setter Property="ToolTip.StaysOpen" Value="False"/>
                     <Setter Property="ToolTipService.ShowDuration" Value="5000"/>
                     <Setter Property="ToolTipService.InitialShowDelay" Value="2000"/>
@@ -92,89 +142,61 @@
                 <DataGridTextColumn Header="Цена" Width="Auto" Binding="{Binding Path=Order.WorksPrice}" ElementStyle="{StaticResource NumericCells}"/>
             </DataGrid.Columns>
         </DataGrid>
-
-
-        <TextBlock x:Name="FiveRecordsTextBlock" HorizontalAlignment="Left" Margin="202,0,0,9.667" TextWrapping="Wrap" Text="5" VerticalAlignment="Bottom" Foreground="Blue" TextDecorations="Underline"  Cursor="Hand" Focusable="True">
-            <TextBlock.InputBindings>
-                <MouseBinding Command="{Binding FiveRecordsCommand}" MouseAction="LeftClick"/>
-            </TextBlock.InputBindings>
-        </TextBlock>
-        <TextBlock x:Name="TwentyRecordsTextBlock" HorizontalAlignment="Left" Margin="213,0,0,9.667" TextWrapping="Wrap" Text="20" VerticalAlignment="Bottom" Foreground="Blue" TextDecorations="Underline" Cursor="Hand" Focusable="True">
-            <TextBlock.InputBindings>
-                <MouseBinding Command="{Binding TwentyRecordsCommand}" MouseAction="LeftClick"/>
-            </TextBlock.InputBindings>
-        </TextBlock>
-        <TextBlock x:Name="FiftyRecordsTextBlock" HorizontalAlignment="Left" Margin="231,0,0,9.667" TextWrapping="Wrap" Text="50" VerticalAlignment="Bottom" Foreground="Blue" TextDecorations="Underline" Cursor="Hand" Focusable="True">
-            <TextBlock.InputBindings>
-                <MouseBinding Command="{Binding FiftyRecordsCommand}" MouseAction="LeftClick"/>
-            </TextBlock.InputBindings>
-        </TextBlock>
-        <TextBlock x:Name="HundredRecordsTextBlock" HorizontalAlignment="Left" Margin="249,0,0,9.667" TextWrapping="Wrap" Text="100" VerticalAlignment="Bottom" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" Focusable="True">
-            <TextBlock.InputBindings>
-                <MouseBinding Command="{Binding HundredRecordsCommand}" MouseAction="LeftClick"/>
-            </TextBlock.InputBindings>
-        </TextBlock>
-        <TextBlock x:Name="CustomRecordsTextBlock" HorizontalAlignment="Left" Margin="273,0,0,9.667" TextWrapping="Wrap" Text="..." VerticalAlignment="Bottom" Foreground="Blue" Cursor="Hand">
-            <TextBlock.InputBindings>
-                <MouseBinding Command="{Binding CustomRecordsClickCommand}" MouseAction="LeftClick"/>
-            </TextBlock.InputBindings>
-        </TextBlock>
-        <TextBlock x:Name="RecordsNumberTextBlock" HorizontalAlignment="Left" Margin="11,0,0,9.667" TextWrapping="Wrap" Text="Количество заказов на странице:" VerticalAlignment="Bottom"/>
-        <TextBlock x:Name="LastPageTextBlock" HorizontalAlignment="Right" Margin="0,0,9.333,9.667" TextWrapping="Wrap" Text="Последняя&gt;&gt;" VerticalAlignment="Bottom" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" Focusable="True">
-            <TextBlock.InputBindings>
-                <MouseBinding Command="{Binding LastPageCommand}" MouseAction="LeftClick"/>
-            </TextBlock.InputBindings>
-        </TextBlock>
-        <TextBlock x:Name="NextPageTextBlock" HorizontalAlignment="Right" Margin="0,0,89.333,9.667" TextWrapping="Wrap" Text="Следующая&gt;" VerticalAlignment="Bottom" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" Focusable="True">
-            <TextBlock.InputBindings>
-                <MouseBinding Command="{Binding NextPageCommand}" MouseAction="LeftClick"/>
-            </TextBlock.InputBindings>
-        </TextBlock>
-        <TextBlock x:Name="PreviousPageTextBlock" HorizontalAlignment="Right" Margin="0,0,166.333,9.667" TextWrapping="Wrap" Text="&lt;Предыдущая" VerticalAlignment="Bottom" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" Focusable="True">
-            <TextBlock.InputBindings>
-                <MouseBinding Command="{Binding PreviousPageCommand}" MouseAction="LeftClick"/>
-            </TextBlock.InputBindings>
-        </TextBlock>
-        <TextBlock x:Name="FirstPageTextBlock" HorizontalAlignment="Right" Margin="0,0,250.333,9.667" TextWrapping="Wrap" Text="&lt;&lt;Первая" VerticalAlignment="Bottom" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" Focusable="True">
-            <TextBlock.InputBindings>
-                <MouseBinding Command="{Binding FirstPageCommand}" MouseAction="LeftClick"/>
-            </TextBlock.InputBindings>
-        </TextBlock>
-        <TextBox x:Name="CustomRecordsTextBox" Text="{Binding CustomNumberOfPages, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding PageTextBoxVisibility}" HorizontalAlignment="Left" Height="17" Margin="272,0,0,9.667" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="36" RenderTransformOrigin="0.5,0.5" IsHitTestVisible="False" Style="{StaticResource FocusedTextBox}">
-            <TextBox.InputBindings>
-                <KeyBinding Command="{Binding CustomRecordsCommand}" Key="Enter"/>
-            </TextBox.InputBindings>
-        </TextBox>
-        <TextBlock x:Name="PageNumberTextBlock" Text="{Binding PageCountInfo}"  Margin="313,0,360.333,8.667" TextWrapping="Wrap" VerticalAlignment="Bottom"/>
-        <Button x:Name="ResetButton" Content="Сбросить фильтры" Command="{Binding ResetClickCommand}" Margin="10,88,0,0" VerticalAlignment="Top" Height="32" Cursor="Hand" HorizontalAlignment="Left" Width="117"/>
-        <TabControl x:Name="FiltersTabControl" Height="73" Margin="10,10,10,0" VerticalAlignment="Top" BorderBrush="#FFACACAC">
-            <TabItem Header="Сортировка">
-                <Grid Background="White">
-                    <TextBlock x:Name="SortForTextBlock" HorizontalAlignment="Right" Margin="0,14,475.333,0" TextWrapping="Wrap" Text="Сортировать по:" VerticalAlignment="Top"/>
-                    <Button x:Name="SortButton" Content="Сортировать" Command="{Binding SortClickCommand}" Margin="0,10,10.333,0" VerticalAlignment="Top" Height="24" Cursor="Hand" HorizontalAlignment="Right" Width="150"/>
-                    <ComboBox x:Name="SortComboBox" ItemsSource="{Binding SortComboBoxItems}" SelectedItem="{Binding SortComboBoxSelectedItem}" HorizontalAlignment="Right" Margin="0,10,320.333,0" VerticalAlignment="Top" Width="150" Height="24"/>
-                    <ComboBox x:Name="SortDirectionComboBox" ItemsSource="{Binding SortDirectionComboBoxItems}" SelectedItem="{Binding SortDirectionComboBoxSelectedItem}" HorizontalAlignment="Right" Margin="0,10,165.333,0" VerticalAlignment="Top" Width="150" Height="24"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Фильтрация">
-                <Grid Background="White" Margin="0,0,0,4">
-                    <TextBlock x:Name="FilterTextBlock" HorizontalAlignment="Right" Margin="0,14,475.333,0" TextWrapping="Wrap" Text="Фильтровать по:" VerticalAlignment="Top"/>
-                    <Button x:Name="FilterButton" Content="Фильтровать" Command="{Binding FilterClickCommand}" Margin="0,10,10.333,0" VerticalAlignment="Top" Height="24" Cursor="Hand" HorizontalAlignment="Right" Width="150"/>
-                    <ComboBox x:Name="ColumnFilterComboBox" ItemsSource="{Binding ColumnFilterComboBoxItems}" SelectedItem="{Binding ColumnFilterComboBoxSelectedItem}" HorizontalAlignment="Right" Margin="0,10,320.333,0" VerticalAlignment="Top" Width="150" Height="24"/>
-                    <ComboBox x:Name="StringValueFilterComboBox" ItemsSource="{Binding StringColumnFilterComboBoxItems}" SelectedItem="{Binding StringColumnFilterComboBoxSelectedItem}" HorizontalAlignment="Right" Margin="0,10,165.333,0" VerticalAlignment="Top" Width="150" Height="24"/>
-                    <ComboBox x:Name="NumericValueFilterComboBox" Visibility="{Binding NumericFilterComboBoxVisibility}" ItemsSource="{Binding NumericColumnFilterComboBoxItems}" SelectedItem="{Binding NumericColumnFilterComboBoxSelectedItem}" HorizontalAlignment="Right" Margin="0,10,265.333,0" VerticalAlignment="Top" Width="50" Height="24"/>
-                    <TextBox x:Name="NumericValueTextBox" Visibility="{Binding NumericFilterTextBoxVisibility}" Text="{Binding FilterText, Mode=TwoWay}" HorizontalAlignment="Right" Height="24" Margin="0,10,165.333,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="100"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Поиск">
-                <Grid Background="White">
-                    <TextBlock x:Name="SearchForTextBlock" HorizontalAlignment="Right" Margin="0,14,475.333,0" TextWrapping="Wrap" Text="Поиск по:" VerticalAlignment="Top"/>
-                    <Button x:Name="SearchButton" Content="Искать" Command="{Binding SearchClickCommand}" Margin="0,10,10.333,0" VerticalAlignment="Top" Height="24" Cursor="Hand" HorizontalAlignment="Right" Width="150"/>
-                    <ComboBox x:Name="SearchComboBox" ItemsSource="{Binding SearchComboBoxItems}" SelectedItem="{Binding SearchComboBoxSelectedItem}" HorizontalAlignment="Right" Margin="0,10,320.333,0" VerticalAlignment="Top" Width="150" Height="24"/>
-                    <TextBox x:Name="SearchTextBox" Text="{Binding SearchText, Mode=TwoWay}" HorizontalAlignment="Right" Height="24" Margin="0,10,165.333,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="150"/>
-                </Grid>
-            </TabItem>
-        </TabControl>
-        <Button x:Name="StatisticsButton" Command="{Binding StatisticsButtonClickCommand}" Content="Статистика" Margin="132,88,0,0" VerticalAlignment="Top" Height="32" Cursor="Hand" HorizontalAlignment="Left" Width="117"/>
+        <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="5">
+            <TextBlock x:Name="RecordsNumberTextBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Количество заказов на странице:" VerticalAlignment="Bottom"/>
+            <TextBlock x:Name="FiveRecordsTextBlock" HorizontalAlignment="Left" Margin="5,0,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Bottom" Foreground="Blue" TextDecorations="Underline"  Cursor="Hand" Focusable="True">
+                <TextBlock.InputBindings>
+                    <MouseBinding Command="{Binding FiveRecordsCommand}" MouseAction="LeftClick"/>
+                </TextBlock.InputBindings>
+            </TextBlock>
+            <TextBlock x:Name="TwentyRecordsTextBlock" HorizontalAlignment="Left" Margin="5,0,0,0" TextWrapping="Wrap" Text="20" VerticalAlignment="Bottom" Foreground="Blue" TextDecorations="Underline" Cursor="Hand" Focusable="True">
+                <TextBlock.InputBindings>
+                    <MouseBinding Command="{Binding TwentyRecordsCommand}" MouseAction="LeftClick"/>
+                </TextBlock.InputBindings>
+            </TextBlock>
+            <TextBlock x:Name="FiftyRecordsTextBlock" HorizontalAlignment="Left" Margin="5,0,0,0" TextWrapping="Wrap" Text="50" VerticalAlignment="Bottom" Foreground="Blue" TextDecorations="Underline" Cursor="Hand" Focusable="True">
+                <TextBlock.InputBindings>
+                    <MouseBinding Command="{Binding FiftyRecordsCommand}" MouseAction="LeftClick"/>
+                </TextBlock.InputBindings>
+            </TextBlock>
+            <TextBlock x:Name="HundredRecordsTextBlock" HorizontalAlignment="Left" Margin="5,0,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Bottom" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" Focusable="True">
+                <TextBlock.InputBindings>
+                    <MouseBinding Command="{Binding HundredRecordsCommand}" MouseAction="LeftClick"/>
+                </TextBlock.InputBindings>
+            </TextBlock>
+            <TextBlock x:Name="CustomRecordsTextBlock" HorizontalAlignment="Left" Margin="5,0,0,0" TextWrapping="Wrap" Text="..." VerticalAlignment="Bottom" Foreground="Blue" Cursor="Hand">
+                <TextBlock.InputBindings>
+                    <MouseBinding Command="{Binding CustomRecordsClickCommand}" MouseAction="LeftClick"/>
+                </TextBlock.InputBindings>
+            </TextBlock>
+            <TextBox x:Name="CustomRecordsTextBox" Margin="-10,0,0,0" Text="{Binding CustomNumberOfPages, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding PageTextBoxVisibility}" HorizontalAlignment="Left" Height="17" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="36" RenderTransformOrigin="0.5,0.5" IsHitTestVisible="False" Style="{StaticResource FocusedTextBox}">
+                <TextBox.InputBindings>
+                    <KeyBinding Command="{Binding CustomRecordsCommand}" Key="Enter"/>
+                </TextBox.InputBindings>
+            </TextBox>
+        </StackPanel>
+        <TextBlock Grid.Row="3" Grid.Column="1" x:Name="PageNumberTextBlock" Text="{Binding PageCountInfo}"  Margin="0,5,5,5" HorizontalAlignment="Center" TextWrapping="Wrap"/>
+        <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal" Margin="5">
+            <TextBlock x:Name="FirstPageTextBlock" HorizontalAlignment="Right" TextWrapping="Wrap" Text="&lt;&lt;Первая" VerticalAlignment="Bottom" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" Focusable="True">
+                <TextBlock.InputBindings>
+                    <MouseBinding Command="{Binding FirstPageCommand}" MouseAction="LeftClick"/>
+                </TextBlock.InputBindings>
+            </TextBlock>
+            <TextBlock x:Name="PreviousPageTextBlock" HorizontalAlignment="Right" Margin="5,0,0,0" TextWrapping="Wrap" Text="&lt;Предыдущая" VerticalAlignment="Bottom" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" Focusable="True">
+                <TextBlock.InputBindings>
+                    <MouseBinding Command="{Binding PreviousPageCommand}" MouseAction="LeftClick"/>
+                </TextBlock.InputBindings>
+            </TextBlock>
+            <TextBlock x:Name="NextPageTextBlock" HorizontalAlignment="Right" Margin="5,0,0,0" TextWrapping="Wrap" Text="Следующая&gt;" VerticalAlignment="Bottom" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" Focusable="True">
+                <TextBlock.InputBindings>
+                    <MouseBinding Command="{Binding NextPageCommand}" MouseAction="LeftClick"/>
+                </TextBlock.InputBindings>
+            </TextBlock>
+            <TextBlock x:Name="LastPageTextBlock" HorizontalAlignment="Right" Margin="5,0,0,0" TextWrapping="Wrap" Text="Последняя&gt;&gt;" VerticalAlignment="Bottom" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" Focusable="True">
+                <TextBlock.InputBindings>
+                    <MouseBinding Command="{Binding LastPageCommand}" MouseAction="LeftClick"/>
+                </TextBlock.InputBindings>
+            </TextBlock>
+        </StackPanel>
     </Grid>
 </Window>

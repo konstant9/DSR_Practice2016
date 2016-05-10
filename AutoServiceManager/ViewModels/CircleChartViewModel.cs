@@ -1,10 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using AutoServiceManager.ViewModels;
-using AutoServiceManager.Views;
-using AutoServiceModel;
-
-namespace AutoServiceManager.ViewModels
+﻿namespace AutoServiceManager.ViewModels
 {
     class CircleChartViewModel:BaseChartViewModel
     {
@@ -12,6 +6,5 @@ namespace AutoServiceManager.ViewModels
         {
             Mediator.Mediator.Register("CircleDiagramStatistics", ShowDiagram);            
         }
-
     }
 }

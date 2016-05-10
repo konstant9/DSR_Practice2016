@@ -12,26 +12,19 @@ namespace AutoServiceManager.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        #region Fields
+        #region Private Fields
+
         private int _numberOfPages;
         private int _rowCount = 20;
-        private int _currentPage = 0;
-        private bool _isFiltered = false;
-        private bool _isSearchAccomplished = false;
-        private bool _isSorted = false;
+        private int _currentPage;
+        private bool _isSorted;
+        private bool _isFiltered;
+        private bool _isSearchAccomplished;
+        private List<WorksAutoOrder> _listOfOrders;
+
         #endregion
 
-        #region Properties
-        private bool _isToolTipOpen;
-        public bool IsToolTipOpen
-        {
-            get { return _isToolTipOpen;}
-            set
-            {
-                _isToolTipOpen = value;
-                OnPropertyChanged("IsToolTipOpen");
-            }
-        }
+        #region Fields and Properties
 
         private int _customNumberOfPages;
         public int CustomNumberOfPages
@@ -41,6 +34,17 @@ namespace AutoServiceManager.ViewModels
             {
                 _customNumberOfPages = value;
                 OnPropertyChanged("CustomNumberOfPages");
+            }
+        }
+
+        private string _pageCountInfo;
+        public string PageCountInfo
+        {
+            get { return _pageCountInfo; }
+            set
+            {
+                _pageCountInfo = value;
+                OnPropertyChanged("PageCountInfo");
             }
         }
 
@@ -57,6 +61,29 @@ namespace AutoServiceManager.ViewModels
             }
         }
 
+        private string _filterText;
+        public string FilterText
+        {
+            get { return _filterText; }
+            set
+            {
+                _filterText = value;
+                OnPropertyChanged("FilterText");
+            }
+        }
+
+        private string _columnFilterComboBoxSelectedItem;
+        public string ColumnFilterComboBoxSelectedItem
+        {
+            get { return _columnFilterComboBoxSelectedItem;}
+            set
+            {
+                SwapFilterComboBoxes(value);
+                _columnFilterComboBoxSelectedItem = value;
+                OnPropertyChanged("ColumnFilterComboBoxSelectedItem");
+            }
+        }
+
         public List<string> ColumnFilterComboBoxItems { get; set; } = new List<string>
         {
             "Марка",
@@ -69,15 +96,14 @@ namespace AutoServiceManager.ViewModels
             "Цена"
         };
 
-        private string _columnFilterComboBoxSelectedItem;
-        public string ColumnFilterComboBoxSelectedItem
+        private string _stringColumnFilterComboBoxSelectedItem;
+        public string StringColumnFilterComboBoxSelectedItem
         {
-            get { return _columnFilterComboBoxSelectedItem;}
+            get { return _stringColumnFilterComboBoxSelectedItem; }
             set
             {
-                SwapFilterComboBoxes(value);
-                _columnFilterComboBoxSelectedItem = value;
-                OnPropertyChanged("ColumnFilterComboBoxSelectedItem");
+                _stringColumnFilterComboBoxSelectedItem = value;
+                OnPropertyChanged("StringColumnFilterComboBoxSelectedItem");
             }
         }
 
@@ -95,14 +121,14 @@ namespace AutoServiceManager.ViewModels
             }
         }
 
-        private string _stringColumnFilterComboBoxSelectedItem;
-        public string StringColumnFilterComboBoxSelectedItem
+        private string _numericColumnFilterComboBoxSelectedItem;
+        public string NumericColumnFilterComboBoxSelectedItem
         {
-            get { return _stringColumnFilterComboBoxSelectedItem; }
+            get { return _numericColumnFilterComboBoxSelectedItem; }
             set
             {
-                _stringColumnFilterComboBoxSelectedItem = value;
-                OnPropertyChanged("StringColumnFilterComboBoxSelectedItem");
+                _numericColumnFilterComboBoxSelectedItem = value;
+                OnPropertyChanged("NumericColumnFilterComboBoxSelectedItem");
             }
         }
 
@@ -115,14 +141,25 @@ namespace AutoServiceManager.ViewModels
             "<="
         };
 
-        private string _numericColumnFilterComboBoxSelectedItem;
-        public string NumericColumnFilterComboBoxSelectedItem
+        private string _searchText;
+        public string SearchText
         {
-            get { return _numericColumnFilterComboBoxSelectedItem; }
+            get { return _searchText; }
             set
             {
-                _numericColumnFilterComboBoxSelectedItem = value;
-                OnPropertyChanged("NumericColumnFilterComboBoxSelectedItem");
+                _searchText = value;
+                OnPropertyChanged("SearchText");
+            }
+        }
+
+        private string _searchComboBoxSelectedItem;
+        public string SearchComboBoxSelectedItem
+        {
+            get { return _searchComboBoxSelectedItem; }
+            set
+            {
+                _searchComboBoxSelectedItem = value;
+                OnPropertyChanged("SearchComboBoxSelectedItem");
             }
         }
 
@@ -133,14 +170,14 @@ namespace AutoServiceManager.ViewModels
             "Наименование работ"
         };
 
-        private string _searchComboBoxSelectedItem;
-        public string SearchComboBoxSelectedItem
+        private string _sortComboBoxSelectedItem;
+        public string SortComboBoxSelectedItem
         {
-            get { return _searchComboBoxSelectedItem; }
+            get { return _sortComboBoxSelectedItem; }
             set
             {
-                _searchComboBoxSelectedItem = value;
-                OnPropertyChanged("SearchComboBoxSelectedItem");
+                _sortComboBoxSelectedItem = value;
+                OnPropertyChanged("SortComboBoxSelectedItem");
             }
         }
 
@@ -158,22 +195,6 @@ namespace AutoServiceManager.ViewModels
             "Цена"
         };
 
-        private string _sortComboBoxSelectedItem;
-        public string SortComboBoxSelectedItem
-        {
-            get { return _sortComboBoxSelectedItem; }
-            set
-            {
-                _sortComboBoxSelectedItem = value;
-                OnPropertyChanged("SortComboBoxSelectedItem");
-            }
-        }
-        public List<string> SortDirectionComboBoxItems { get; set; } = new List<string>
-        {
-            "По возрастанию",
-            "По убыванию"
-        };
-
         private string _sortDirectionComboBoxSelectedItem;
         public string SortDirectionComboBoxSelectedItem
         {
@@ -185,61 +206,22 @@ namespace AutoServiceManager.ViewModels
             }
         }
 
-        private string _filterText;
-        public string FilterText
+        public List<string> SortDirectionComboBoxItems { get; set; } = new List<string>
         {
-            get { return _filterText;}
-            set
-            {
-                _filterText = value;
-                OnPropertyChanged("FilterText");
-            }   
-        }
+            "По возрастанию",
+            "По убыванию"
+        };
 
-        private string _searchText;
-        public string SearchText
+        private List<CustomerOrder> _customerOrdersList;
+        public List<CustomerOrder> CustomerOrdersList
         {
-            get { return _searchText;}
+            get { return _customerOrdersList; }
             set
             {
-                _searchText = value;
-                OnPropertyChanged("SearchText");
+                _customerOrdersList = value;
+                OnPropertyChanged("CustomerOrdersList");
             }
         }
-
-        private string _pageCountInfo;
-        public string PageCountInfo
-        {
-            get { return _pageCountInfo; }
-            set
-            {
-                _pageCountInfo = value;
-                OnPropertyChanged("PageCountInfo");
-            }
-        }
-
-        private string _toolTipText = "lol";
-        public string ToolTipText
-        {
-            get { return _toolTipText; }
-            set
-            {
-                _toolTipText = value;
-                OnPropertyChanged("ToolTipText");
-            }
-        }
-
-        private List<OrderCustomer> _autoServiceList;
-        public List<OrderCustomer> AutoServiceList
-        {
-            get { return _autoServiceList; }
-            set
-            {
-                _autoServiceList = value;
-                OnPropertyChanged("AutoServiceList");
-            }
-        }
-
 
         private Visibility _pageTextBoxVisibility = Visibility.Hidden;
         public Visibility PageTextBoxVisibility
@@ -273,9 +255,11 @@ namespace AutoServiceManager.ViewModels
                 OnPropertyChanged("NumericFilterComboBoxVisibility");
             }
         }
-#endregion
+        
+        #endregion
         
         #region Commands
+
         public ICommand FiveRecordsCommand
         {
             get
@@ -286,12 +270,12 @@ namespace AutoServiceManager.ViewModels
                         return;
                     _rowCount = 5;
                     _currentPage = 0;
-                    ShowRecords();
+                    FillDataGrid();
                 });
             }
         }
-
-        public ICommand TwentyRecordsCommand {
+        public ICommand TwentyRecordsCommand
+        {
             get
             {
                 return new RelayCommand(x =>
@@ -300,10 +284,10 @@ namespace AutoServiceManager.ViewModels
                         return;
                     _rowCount = 20;
                     _currentPage = 0;
-                    ShowRecords();
+                    FillDataGrid();
                 });
-            } }
-
+            }
+        }
         public ICommand FiftyRecordsCommand
         {
             get
@@ -314,11 +298,10 @@ namespace AutoServiceManager.ViewModels
                         return;
                     _rowCount = 50;
                     _currentPage = 0;
-                    ShowRecords();
+                    FillDataGrid();
                 });
             }
         }
-
         public ICommand HundredRecordsCommand
         {
             get
@@ -329,69 +312,10 @@ namespace AutoServiceManager.ViewModels
                         return;
                     _rowCount = 100;
                     _currentPage = 0;
-                    ShowRecords();
+                    FillDataGrid();
                 });
             }
         }
-
-        public ICommand FirstPageCommand
-        {
-            get
-            {
-                return new RelayCommand(x =>
-                {
-                    if (_currentPage == 0)
-                        return;
-                    _currentPage = 0;
-                    ShowRecords();
-                });
-            }
-        }
-
-        public ICommand LastPageCommand
-        {
-            get
-            {
-                return new RelayCommand(x =>
-                {
-                    if (_currentPage == _numberOfPages - 1)
-                        return;
-                    _currentPage = _numberOfPages - 1;
-                    ShowRecords();
-                });
-            }
-        }
-
-        public ICommand NextPageCommand
-        {
-            get
-            {
-                return new RelayCommand(x =>
-                {
-                    if (_currentPage == _numberOfPages - 1)
-                        return;
-                    if (_currentPage < _numberOfPages - 1)
-                        _currentPage++;
-                    ShowRecords();
-                });
-            }
-        }
-
-        public ICommand PreviousPageCommand
-        {
-            get
-            {
-                return new RelayCommand(x =>
-                {
-                    if (_currentPage == 0)
-                        return;
-                    if (_currentPage > 0)
-                        _currentPage--;
-                    ShowRecords();
-                });
-            }
-        }
-
         public ICommand CustomRecordsCommand
         {
             get
@@ -406,13 +330,12 @@ namespace AutoServiceManager.ViewModels
                     }
                     _rowCount = CustomNumberOfPages;
                     _currentPage = 0;
-                    ShowRecords();
+                    FillDataGrid();
                     TextBoxIsFocused = false;
                     CustomNumberOfPages = 0;
                 });
             }
         }
-
         public ICommand CustomRecordsClickCommand
         {
             get
@@ -424,7 +347,60 @@ namespace AutoServiceManager.ViewModels
                 });
             }
         }
-
+        public ICommand FirstPageCommand
+        {
+            get
+            {
+                return new RelayCommand(x =>
+                {
+                    if (_currentPage == 0)
+                        return;
+                    _currentPage = 0;
+                    FillDataGrid();
+                });
+            }
+        }
+        public ICommand LastPageCommand
+        {
+            get
+            {
+                return new RelayCommand(x =>
+                {
+                    if (_currentPage == _numberOfPages - 1)
+                        return;
+                    _currentPage = _numberOfPages - 1;
+                    FillDataGrid();
+                });
+            }
+        }
+        public ICommand NextPageCommand
+        {
+            get
+            {
+                return new RelayCommand(x =>
+                {
+                    if (_currentPage == _numberOfPages - 1)
+                        return;
+                    if (_currentPage < _numberOfPages - 1)
+                        _currentPage++;
+                    FillDataGrid();
+                });
+            }
+        }
+        public ICommand PreviousPageCommand
+        {
+            get
+            {
+                return new RelayCommand(x =>
+                {
+                    if (_currentPage == 0)
+                        return;
+                    if (_currentPage > 0)
+                        _currentPage--;
+                    FillDataGrid();
+                });
+            }
+        }
         public ICommand FilterClickCommand
         {
             get
@@ -439,39 +415,40 @@ namespace AutoServiceManager.ViewModels
                 });
             }
         }
-
         public ICommand SearchClickCommand
         {
             get
             {
                 return new RelayCommand(x =>
                 {
+                    
+                    if (SearchComboBoxSelectedItem == null || SearchText == string.Empty)
+                        return;
                     NumericColumnFilterComboBoxSelectedItem = null;
                     StringColumnFilterComboBoxSelectedItem = null;
                     ColumnFilterComboBoxSelectedItem = null;
                     FilterText = string.Empty;
-                    if (SearchComboBoxSelectedItem == null || SearchText == string.Empty)
-                        return;
                     _currentPage = 0;
-                    _isSearchAccomplished = true;
                     _isFiltered = false;
+                    _isSearchAccomplished = true;
                     SearchThroughDataGrid();
                 });
             }
         }
-
-        public ICommand WindowClickCommand
+        public ICommand SortClickCommand
         {
             get
             {
                 return new RelayCommand(x =>
                 {
-                    if (TextBoxIsFocused)
-                        TextBoxIsFocused = false;
+                    if (SortComboBoxSelectedItem == null || SortDirectionComboBoxSelectedItem == null)
+                        return;
+                    _isSorted = true;
+                    _currentPage = 0;
+                    FillDataGrid();
                 });
             }
         }
-
         public ICommand ResetClickCommand
         {
             get 
@@ -486,49 +463,45 @@ namespace AutoServiceManager.ViewModels
                         if (!_isFiltered && !_isSearchAccomplished)
                         {
                             _currentPage = 0;
+                            _listOfOrders = null;
                             FillDataGrid();
                         }
                     }
                     if (_isFiltered)
                     {
-                        _isFiltered = false;
                         _currentPage = 0;
+                        _isFiltered = false;
                         ColumnFilterComboBoxSelectedItem = null;
                         StringColumnFilterComboBoxSelectedItem = null;
                         FilterText = string.Empty;
                         NumericColumnFilterComboBoxSelectedItem = string.Empty;
+                        _listOfOrders = null;
                         FillDataGrid();
                         return;
                     }
                     if (_isSearchAccomplished)
                     {
-                        _isSearchAccomplished = false;
                         _currentPage = 0;
+                        _isSearchAccomplished = false;
                         SearchComboBoxSelectedItem = null;
                         SearchText = string.Empty;
+                        _listOfOrders = null;
                         FillDataGrid();
                     }
                 });
             }
         }
-
-        public ICommand SortClickCommand
+        public ICommand WindowClickCommand
         {
             get
             {
                 return new RelayCommand(x =>
                 {
-                    if (SortComboBoxSelectedItem == null || SortDirectionComboBoxSelectedItem == null)
-                        return;
-                    _isSorted = true;
-                    //Не решил, что лучше, при сортировке сбрасывать на первую страницу, или сортировать ту, что есть
-                    /*_currentPage = 0;
-                    FillDataGrid();*/
-                    SortDataGrid();
+                    if (TextBoxIsFocused)
+                        TextBoxIsFocused = false;
                 });
             }
         }
-
         public ICommand StatisticsButtonClickCommand
         {
             get
@@ -540,35 +513,15 @@ namespace AutoServiceManager.ViewModels
                 });
             }
         }
+        
+        #endregion
 
-#endregion
-
-        //public ICommand CloseToolTipCommand { get; set; }
         public MainViewModel()
         {
             FillDataGrid();
-            /*CloseToolTipCommand = new RelayCommand(x =>
-            {
-                if (IsToolTipOpen)
-                    IsToolTipOpen = false;                
-            });*/
         }
 
         #region Methods
-        private void ShowRecords()
-        {
-            if (_isFiltered)
-            {
-                FilterDataGrid();
-                return;
-            }
-            if (_isSearchAccomplished)
-            {
-                SearchThroughDataGrid();
-                return;
-            }
-            FillDataGrid();
-        }
 
         private void SwapFilterComboBoxes(string filterBy)
         {
@@ -576,24 +529,20 @@ namespace AutoServiceManager.ViewModels
             {
                 NumericFilterComboBoxVisibility = Visibility.Hidden;
                 NumericFilterTextBoxVisibility = Visibility.Hidden;
-                var context = new AutoServiceEntities();
-                switch (filterBy)
+                using (var context = new AutoServiceEntities())
                 {
-                    case "Марка":
-                        {
+                    switch (filterBy)
+                    {
+                        case "Марка":
                             StringColumnFilterComboBoxItems = context.WorksAutoOrder.Select(x => x.CarBrand).Distinct().ToList();
                             break;
-                        }
-                    case "Модель":
-                        {
+                        case "Модель":
                             StringColumnFilterComboBoxItems = context.WorksAutoOrder.Select(x => x.CarModel).Distinct().ToList();
                             break;
-                        }
-                    case "Тип трансмиссии":
-                        {
+                        case "Тип трансмиссии":
                             StringColumnFilterComboBoxItems = context.WorksAutoOrder.Select(x => x.TransmissionType).Distinct().ToList();
                             break;
-                        }
+                    }
                 }
             }
             else
@@ -604,37 +553,21 @@ namespace AutoServiceManager.ViewModels
         }
 
         private void FillDataGrid()
-        { 
-            using (var context = new AutoServiceEntities()) 
-            {
-                var totalAmountOfRows = context.WorksAutoOrder.Count(); 
-                _numberOfPages = totalAmountOfRows%_rowCount != 0 
-                    ? totalAmountOfRows/_rowCount + 1 
-                    : totalAmountOfRows/_rowCount; 
-                var query = totalAmountOfRows<_rowCount? context.WorksAutoOrder.OrderBy(x => x.OrderID).Skip(_currentPage* _rowCount)
-                    : context.WorksAutoOrder.OrderBy(x => x.OrderID).Skip(_currentPage* _rowCount).Take(_rowCount);
-                AutoServiceList = OrderCustomer.ConvertToList(query);
-            }
+        {
+            using (var context = new AutoServiceEntities())
+                if (_listOfOrders == null)
+                    _listOfOrders = context.WorksAutoOrder.Select(x => x).ToList();
             if (_isSorted)
                 SortDataGrid();
+            var totalAmountOfRows = _listOfOrders.Count;
+            _numberOfPages = totalAmountOfRows%_rowCount != 0
+                ? totalAmountOfRows/_rowCount + 1
+                : totalAmountOfRows/_rowCount;
+            var ordersOnCurrentPage = totalAmountOfRows < _rowCount
+                ? _listOfOrders.Skip(_currentPage*_rowCount)
+                : _listOfOrders.Skip(_currentPage*_rowCount).Take(_rowCount);
+            CustomerOrdersList = CustomerOrder.GetCustomerOrders(ordersOnCurrentPage);
             PageCountInfo = "Страница " + (_currentPage + 1) + " из " + _numberOfPages; 
-        }
-
-        private void FillDataGrid(IQueryable<WorksAutoOrder> query)
-        { 
-             var totalAmountOfRows = query.Count(); 
-             _numberOfPages = totalAmountOfRows%_rowCount != 0 
-                 ? totalAmountOfRows/_rowCount + 1 
-                    : totalAmountOfRows/_rowCount;
-            var q = totalAmountOfRows < _rowCount
-                ? query.OrderBy(x => x.OrderID).Skip(_currentPage*_rowCount)
-                : query.OrderBy(x => x.OrderID)
-                    .Skip(_currentPage*_rowCount)
-                    .Take(_rowCount);
-            AutoServiceList = OrderCustomer.ConvertToList(q);
-            if (_isSorted)
-                SortDataGrid();
-            PageCountInfo = "Страница " + (_currentPage + 1) + " из " + _numberOfPages;
         }
 
         private void FilterDataGrid()
@@ -643,55 +576,29 @@ namespace AutoServiceManager.ViewModels
             if (NumericFilterComboBoxVisibility == Visibility.Hidden)
             {
                 if (StringColumnFilterComboBoxSelectedItem == null) return;
-
                 if (!_isFiltered)
                 {
-                    _isFiltered = true;
                     _currentPage = 0;
                     _isSearchAccomplished = false;
                 }
-                switch (ColumnFilterComboBoxSelectedItem)
+                using (var context = new AutoServiceEntities())
                 {
-                    case "Марка":
-                        {
-                            using (var context = new AutoServiceEntities())
-                            {
-                                var query =
-                                    context.WorksAutoOrder.Where(
-                                        x =>
-                                            x.CarBrand == StringColumnFilterComboBoxSelectedItem);
-                                FillDataGrid(query);
-                            }
-                            break;
-                        }
-                    case "Модель":
-                        {
-                            using (var context = new AutoServiceEntities())
-                            {
-                                var query =
-                                    context.WorksAutoOrder.Where(
-                                        x =>
-                                            x.CarModel == StringColumnFilterComboBoxSelectedItem);
-                                FillDataGrid(query);
-                            }
-                            break;
-                        }
-                    case "Тип трансмиссии":
-
-                        {
-                            using (var context = new AutoServiceEntities())
-
-                            {
-                                var query =
-                                    context.WorksAutoOrder.Where(
-                                        x =>
-                                            x.TransmissionType == StringColumnFilterComboBoxSelectedItem);
-                                FillDataGrid(query);
-                            }
-                            break;
-                        }
+                    switch (ColumnFilterComboBoxSelectedItem)
+                    {
+                        case "Марка":
+                                _listOfOrders = context.WorksAutoOrder.Where(x => x.CarBrand == StringColumnFilterComboBoxSelectedItem).ToList();
+                                FillDataGrid();
+                                break;
+                        case "Модель":
+                                _listOfOrders = context.WorksAutoOrder.Where(x => x.CarModel == StringColumnFilterComboBoxSelectedItem).ToList();
+                                FillDataGrid();
+                                break;
+                        case "Тип трансмиссии":
+                                _listOfOrders = context.WorksAutoOrder.Where(x => x.TransmissionType == StringColumnFilterComboBoxSelectedItem).ToList();
+                                FillDataGrid();
+                                break;
+                    }
                 }
-
             }
             else
             {
@@ -706,151 +613,69 @@ namespace AutoServiceManager.ViewModels
 
                     if (!_isFiltered)
                     {
-                        _isFiltered = true;
                         _currentPage = 0;
                         _isSearchAccomplished = false;
                     }
+
                     if (ColumnFilterComboBoxSelectedItem == "Время начала")
                     {
-                        switch (NumericColumnFilterComboBoxSelectedItem)
+                        using (var context = new AutoServiceEntities())
                         {
-                            case ">=":
-                                {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.WorksAutoOrder.Where(
-                                                x =>
-                                                    (x.WorksStart >= date) || (x.WorksStart == null));
-                                        FillDataGrid(query);
-                                    }
-                                    break;
-                                }
-                            case "<=":
-                                {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.WorksAutoOrder.Where(
-                                                x =>
-                                                    (x.WorksStart <= date) || (x.WorksStart == null));
-                                        FillDataGrid(query);
-                                    }
-                                    break;
-                                }
-                            case "=":
-                                {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.WorksAutoOrder.Where(
-                                                x =>
-                                                    DbFunctions.TruncateTime(x.WorksStart) == date.Date);
-                                        FillDataGrid(query);
-                                    }
-                                    break;
-                                }
-                            case ">":
-                                {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.WorksAutoOrder.Where(
-                                                x =>
-                                                    (DbFunctions.TruncateTime(x.WorksStart) > date.Date) || (x.WorksStart == null));
-                                        FillDataGrid(query);
-                                    }
-                                    break;
-                                }
-                            case "<":
-                                {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.WorksAutoOrder.Where(
-                                                x =>
-                                                    (DbFunctions.TruncateTime(x.WorksStart) < date.Date) || (x.WorksStart == null));
-                                        FillDataGrid(query);
-                                    }
-                                    break;
-                                }
+                            switch (NumericColumnFilterComboBoxSelectedItem)
+                            {
+                                case ">=":
+                                        _listOfOrders = context.WorksAutoOrder.Where(x => (x.WorksStart >= date)).ToList();
+                                        FillDataGrid();
+                                        break;
+                                case "<=":
+                                        _listOfOrders = context.WorksAutoOrder.Where(x => (x.WorksStart <= date)).ToList();
+                                        FillDataGrid();
+                                        break;
+                                case "=":
+                                        _listOfOrders = context.WorksAutoOrder.Where(x => DbFunctions.TruncateTime(x.WorksStart) == date.Date).ToList();
+                                        FillDataGrid();
+                                        break;
+                                case ">":
+                                        _listOfOrders = context.WorksAutoOrder.Where(x => DbFunctions.TruncateTime(x.WorksStart) > date.Date).ToList();
+                                        FillDataGrid();
+                                        break;
+                                case "<":
+                                        _listOfOrders = context.WorksAutoOrder.Where(x => (DbFunctions.TruncateTime(x.WorksStart) < date.Date)).ToList();
+                                        FillDataGrid();
+                                        break;
+                            }
                         }
                         return;
                     }
                     else
                     {
-                        switch (NumericColumnFilterComboBoxSelectedItem)
+                        using (var context = new AutoServiceEntities())
                         {
-                            case ">=":
-                                {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.WorksAutoOrder.Where(
-                                                x =>
-                                                    (x.WorksFinish >= date) || (x.WorksFinish == null));
-                                        FillDataGrid(query);
-                                    }
-                                    break;
-                                }
-                            case "<=":
-                                {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.WorksAutoOrder.Where(
-                                                x =>
-                                                    (x.WorksFinish <= date) || (x.WorksFinish == null));
-                                        FillDataGrid(query);
-                                    }
-                                    break;
-                                }
-                            case "=":
-                                {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.WorksAutoOrder.Where(
-                                                x =>
-                                                    DbFunctions.TruncateTime(x.WorksFinish) == date.Date);
-                                        FillDataGrid(query);
-                                    }
-                                    break;
-                                }
-                            case ">":
-                                {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.WorksAutoOrder.Where(
-                                                x =>
-                                                    (DbFunctions.TruncateTime(x.WorksFinish) > date.Date) || (x.WorksFinish == null));
-                                        FillDataGrid(query);
-                                    }
-                                    break;
-                                }
-                            case "<":
-                                {
-                                    using (var context = new AutoServiceEntities())
-
-                                    {
-                                        var query =
-                                            context.WorksAutoOrder.Where(
-                                                x =>
-                                                    (DbFunctions.TruncateTime(x.WorksFinish) < date.Date) || (x.WorksFinish == null));
-                                        FillDataGrid(query);
-                                    }
-                                    break;
-                                }
+                            switch (NumericColumnFilterComboBoxSelectedItem)
+                            {
+                                case ">=":
+                                        _listOfOrders = context.WorksAutoOrder.Where(x =>(x.WorksFinish >= date) || (x.WorksFinish == null)).ToList();
+                                        FillDataGrid();
+                                        break;
+                                case "<=":
+                                        _listOfOrders = context.WorksAutoOrder.Where(x => (x.WorksFinish <= date)).ToList();
+                                        FillDataGrid();
+                                        break;
+                                case "=":
+                                        _listOfOrders = context.WorksAutoOrder.Where(x => DbFunctions.TruncateTime(x.WorksFinish) == date.Date).ToList();
+                                        FillDataGrid();
+                                        break;
+                                case ">":
+                                        _listOfOrders = context.WorksAutoOrder.Where(x => 
+                                                        (DbFunctions.TruncateTime(x.WorksFinish) > date.Date) ||
+                                                        (x.WorksFinish == null)).ToList();
+                                        FillDataGrid();
+                                        break;
+                                case "<":
+                                        _listOfOrders = context.WorksAutoOrder.Where(x => (DbFunctions.TruncateTime(x.WorksFinish) < date.Date)).ToList();
+                                        FillDataGrid();
+                                        break;
+                            }
                         }
                         return;
                     }
@@ -858,84 +683,38 @@ namespace AutoServiceManager.ViewModels
                 int value;
                 if (!int.TryParse(FilterText, out value))
                     return;
-
-
                 if (ColumnFilterComboBoxSelectedItem == "Мощность двигателя")
                 {
-
                     if (!_isFiltered)
                     {
-                        _isFiltered = true;
                         _currentPage = 0;
                         _isSearchAccomplished = false;
                     }
-                    switch (NumericColumnFilterComboBoxSelectedItem)
+                    using (var context = new AutoServiceEntities())
                     {
-                        case ">=":
-                            {
-                                using (var context = new AutoServiceEntities())
-
-                                {
-                                    var query =
-                                        context.WorksAutoOrder.Where(
-                                            x =>
-                                                (x.EnginePower >= value) || (x.EnginePower == null));
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
-                        case "<=":
-                            {
-                                using (var context = new AutoServiceEntities())
-
-                                {
-                                    var query =
-                                        context.WorksAutoOrder.Where(
-                                            x =>
-                                                (x.EnginePower <= value) || (x.EnginePower == null));
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
-                        case "=":
-                            {
-                                using (var context = new AutoServiceEntities())
-
-                                {
-                                    var query =
-                                        context.WorksAutoOrder.Where(
-                                            x =>
-                                                x.EnginePower == value);
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
-                        case ">":
-                            {
-                                using (var context = new AutoServiceEntities())
-
-                                {
-                                    var query =
-                                        context.WorksAutoOrder.Where(
-                                            x =>
-                                                (x.EnginePower > value) || (x.EnginePower == null));
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
-                        case "<":
-                            {
-                                using (var context = new AutoServiceEntities())
-
-                                {
-                                    var query =
-                                        context.WorksAutoOrder.Where(
-                                            x =>
-                                                (x.EnginePower < value) || (x.EnginePower == null));
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
+                        switch (NumericColumnFilterComboBoxSelectedItem)
+                        {
+                            case ">=":
+                                _listOfOrders = context.WorksAutoOrder.Where( x => (x.EnginePower >= value) || (x.EnginePower == null)).ToList();
+                                    FillDataGrid();
+                                    break;
+                            case "<=":
+                                    _listOfOrders = context.WorksAutoOrder.Where( x => (x.EnginePower <= value) || (x.EnginePower == null)).ToList();
+                                    FillDataGrid();
+                                    break;
+                            case "=":
+                                    _listOfOrders = context.WorksAutoOrder.Where(x => x.EnginePower == value).ToList();
+                                    FillDataGrid();
+                                    break;
+                            case ">":
+                                    _listOfOrders = context.WorksAutoOrder.Where(x => (x.EnginePower > value) || (x.EnginePower == null)).ToList();
+                                    FillDataGrid();
+                                    break;
+                            case "<":
+                                    _listOfOrders = context.WorksAutoOrder.Where(x => (x.EnginePower < value) || (x.EnginePower == null)).ToList();
+                                    FillDataGrid();
+                                    break;
+                        }
                     }
                     return;
                 }
@@ -945,77 +724,34 @@ namespace AutoServiceManager.ViewModels
                         return;
                     if (!_isFiltered)
                     {
-                        _isFiltered = true;
                         _currentPage = 0;
                         _isSearchAccomplished = false;
                     }
-                    switch (NumericColumnFilterComboBoxSelectedItem)
+                    using (var context = new AutoServiceEntities())
                     {
-                        case ">=":
-                            {
-                                using (var context = new AutoServiceEntities())
-
-                                {
-                                    var query =
-                                        context.WorksAutoOrder.Where(
-                                            x =>
-                                                x.YearMade >= value);
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
-                        case "<=":
-                            {
-                                using (var context = new AutoServiceEntities())
-
-                                {
-                                    var query =
-                                        context.WorksAutoOrder.Where(
-                                            x =>
-                                                x.YearMade <= value);
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
-                        case "=":
-                            {
-                                using (var context = new AutoServiceEntities())
-
-                                {
-                                    var query =
-                                        context.WorksAutoOrder.Where(
-                                            x =>
-                                                x.YearMade == value);
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
-                        case ">":
-                            {
-                                using (var context = new AutoServiceEntities())
-
-                                {
-                                    var query =
-                                        context.WorksAutoOrder.Where(
-                                            x =>
-                                                x.YearMade > value);
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
-                        case "<":
-                            {
-                                using (var context = new AutoServiceEntities())
-
-                                {
-                                    var query =
-                                        context.WorksAutoOrder.Where(
-                                            x =>
-                                                x.YearMade < value);
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
+                        switch (NumericColumnFilterComboBoxSelectedItem)
+                        {
+                            case ">=":
+                                    _listOfOrders = context.WorksAutoOrder.Where(x => x.YearMade >= value).ToList();
+                                    FillDataGrid();
+                                    break;
+                            case "<=":
+                                    _listOfOrders = context.WorksAutoOrder.Where(x => x.YearMade <= value).ToList();
+                                    FillDataGrid();
+                                    break;
+                            case "=":
+                                    _listOfOrders = context.WorksAutoOrder.Where(x => x.YearMade == value).ToList();
+                                    FillDataGrid();
+                                    break;
+                            case ">":
+                                    _listOfOrders = context.WorksAutoOrder.Where(x => x.YearMade > value).ToList();
+                                    FillDataGrid();
+                                    break;
+                            case "<":
+                                    _listOfOrders = context.WorksAutoOrder.Where(x => x.YearMade < value).ToList();
+                                    FillDataGrid();
+                                    break;
+                        }
                     }
                     return;
                 }
@@ -1023,77 +759,34 @@ namespace AutoServiceManager.ViewModels
                 {
                     if (!_isFiltered)
                     {
-                        _isFiltered = true;
                         _currentPage = 0;
                         _isSearchAccomplished = false;
                     }
-                    switch (NumericColumnFilterComboBoxSelectedItem)
+                    using (var context = new AutoServiceEntities())
                     {
-                        case ">=":
-                            {
-                                using (var context = new AutoServiceEntities())
-
-                                {
-                                    var query =
-                                        context.WorksAutoOrder.Where(
-                                            x =>
-                                                x.WorksPrice >= value);
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
-                        case "<=":
-                            {
-                                using (var context = new AutoServiceEntities())
-
-                                {
-                                    var query =
-                                        context.WorksAutoOrder.Where(
-                                            x =>
-                                                x.WorksPrice <= value);
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
-                        case "=":
-                            {
-                                using (var context = new AutoServiceEntities())
-
-                                {
-                                    var query =
-                                        context.WorksAutoOrder.Where(
-                                            x =>
-                                                x.WorksPrice == value);
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
-                        case ">":
-                            {
-                                using (var context = new AutoServiceEntities())
-
-                                {
-                                    var query =
-                                        context.WorksAutoOrder.Where(
-                                            x =>
-                                                x.WorksPrice > value);
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
-                        case "<":
-                            {
-                                using (var context = new AutoServiceEntities())
-
-                                {
-                                    var query =
-                                        context.WorksAutoOrder.Where(
-                                            x =>
-                                                x.WorksPrice < value);
-                                    FillDataGrid(query);
-                                }
-                                break;
-                            }
+                        switch (NumericColumnFilterComboBoxSelectedItem)
+                        {
+                            case ">=":
+                                    _listOfOrders = context.WorksAutoOrder.Where(x => x.WorksPrice >= value).ToList();
+                                    FillDataGrid();
+                                    break;
+                            case "<=":
+                                    _listOfOrders = context.WorksAutoOrder.Where(x => x.WorksPrice <= value).ToList();
+                                    FillDataGrid();
+                                    break;
+                            case "=":
+                                    _listOfOrders = context.WorksAutoOrder.Where(x => x.WorksPrice == value).ToList();
+                                    FillDataGrid();
+                                    break;
+                            case ">":
+                                    _listOfOrders = context.WorksAutoOrder.Where(x => x.WorksPrice > value).ToList();
+                                    FillDataGrid();
+                                    break;
+                            case "<":
+                                    _listOfOrders = context.WorksAutoOrder.Where(x => x.WorksPrice < value).ToList();
+                                    FillDataGrid();
+                                    break;
+                        }
                     }
                 }
             }
@@ -1101,29 +794,23 @@ namespace AutoServiceManager.ViewModels
 
         private void SearchThroughDataGrid()
         {
-            switch (SearchComboBoxSelectedItem)
+            using (var context = new AutoServiceEntities())
             {
-                case "Марка":
-                    using (var context = new AutoServiceEntities())
-                    {
-                        var query = context.WorksAutoOrder.Where(x => x.CarBrand.Contains(SearchText));
-                        FillDataGrid(query);
-                    }
-                    break;
-                case "Модель":
-                    using (var context = new AutoServiceEntities())
-                    {
-                        var query = context.WorksAutoOrder.Where(x => x.CarModel.Contains(SearchText));
-                        FillDataGrid(query);
-                    }
-                    break;
-                case "Наименование работ":
-                    using (var context = new AutoServiceEntities())
-                    {
-                        var query = context.WorksAutoOrder.Where(x => x.WorksName.Contains(SearchText));
-                        FillDataGrid(query);
-                    }
-                    break;
+                switch (SearchComboBoxSelectedItem)
+                {
+                    case "Марка":
+                        _listOfOrders = context.WorksAutoOrder.Where(x => x.CarBrand.Contains(SearchText)).ToList();
+                        FillDataGrid();
+                        break;
+                    case "Модель":
+                        _listOfOrders = context.WorksAutoOrder.Where(x => x.CarModel.Contains(SearchText)).ToList();
+                        FillDataGrid();
+                        break;
+                    case "Наименование работ":
+                        _listOfOrders = context.WorksAutoOrder.Where(x => x.WorksName.Contains(SearchText)).ToList();
+                        FillDataGrid();
+                        break;
+                }
             }
         }
 
@@ -1132,86 +819,69 @@ namespace AutoServiceManager.ViewModels
             switch (SortComboBoxSelectedItem)
             {
                 case "Номер заказа":
-                    {
-                        AutoServiceList = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
-                                AutoServiceList.OrderBy(x => x.Order.OrderID).ToList() :
-                                AutoServiceList.OrderByDescending(x => x.Order.OrderID).ToList();
+                        _listOfOrders = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
+                                _listOfOrders.OrderBy(x => x.OrderID).ToList() :
+                                _listOfOrders.OrderByDescending(x => x.OrderID).ToList();
                         break;
-                    }
                 case "Марка":
-                    {
-                        AutoServiceList = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
-                                AutoServiceList.OrderBy(x => x.Order.CarBrand).ToList() :
-                                AutoServiceList.OrderByDescending(x => x.Order.CarBrand).ToList();
+                        _listOfOrders = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
+                                _listOfOrders.OrderBy(x => x.CarBrand).ToList() :
+                                _listOfOrders.OrderByDescending(x => x.CarBrand).ToList();
                         break;
-                    }
                 case "Модель":
-                    {
-                        AutoServiceList = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
-                                AutoServiceList.OrderBy(x => x.Order.CarModel).ToList() :
-                                AutoServiceList.OrderByDescending(x => x.Order.CarModel).ToList();
+                        _listOfOrders = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
+                                _listOfOrders.OrderBy(x => x.CarModel).ToList() :
+                                _listOfOrders.OrderByDescending(x => x.CarModel).ToList();
                         break;
-                    }
                 case "Тип трансмиссии":
-                    {
-                        AutoServiceList = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
-                                AutoServiceList.OrderBy(x => x.Order.TransmissionType).ToList() :
-                                AutoServiceList.OrderByDescending(x => x.Order.TransmissionType).ToList();
+                        _listOfOrders = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
+                                _listOfOrders.OrderBy(x => x.TransmissionType).ToList() :
+                                _listOfOrders.OrderByDescending(x => x.TransmissionType).ToList();
                         break;
-                    }
                 case "Мощность двигателя":
-                    {
-                        AutoServiceList = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
-                                AutoServiceList.OrderBy(x => x.Order.EnginePower).ToList() :
-                                AutoServiceList.OrderByDescending(x => x.Order.EnginePower).ToList();
+                        _listOfOrders = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
+                                _listOfOrders.OrderBy(x => x.EnginePower).ToList() :
+                                _listOfOrders.OrderByDescending(x => x.EnginePower).ToList();
                         break;
-                    }
                 case "Год выпуска":
-                    {
-                        AutoServiceList = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
-                                AutoServiceList.OrderBy(x => x.Order.YearMade).ToList() :
-                                AutoServiceList.OrderByDescending(x => x.Order.YearMade).ToList();
+                        _listOfOrders = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
+                                _listOfOrders.OrderBy(x => x.YearMade).ToList() :
+                                _listOfOrders.OrderByDescending(x => x.YearMade).ToList();
                         break;
-                    }
                 case "Наименование работ":
-                    {
-                        AutoServiceList = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
-                                AutoServiceList.OrderBy(x => x.Order.WorksName).ToList() :
-                                AutoServiceList.OrderByDescending(x => x.Order.WorksName).ToList();
+                        _listOfOrders = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
+                                _listOfOrders.OrderBy(x => x.WorksName).ToList() :
+                                _listOfOrders.OrderByDescending(x => x.WorksName).ToList();
                         break;
-                    }
                 case "Время начала":
-                    {
-                        AutoServiceList = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
-                                AutoServiceList.OrderBy(x => x.Order.WorksStart).ToList() :
-                                AutoServiceList.OrderByDescending(x => x.Order.WorksStart).ToList();
+                        _listOfOrders = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
+                                _listOfOrders.OrderBy(x => x.WorksStart).ToList() :
+                                _listOfOrders.OrderByDescending(x => x.WorksStart).ToList();
                         break;
-                    }
                 case "Время окончания":
-                    {
-                        AutoServiceList = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
-                                AutoServiceList.OrderBy(x => x.Order.WorksFinish).ToList() :
-                                AutoServiceList.OrderByDescending(x => x.Order.WorksFinish).ToList();
+                        _listOfOrders = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
+                                _listOfOrders.OrderBy(x => x.WorksFinish == null).ThenBy(x => x.WorksFinish).ToList() :
+                                _listOfOrders.OrderByDescending(x => x.WorksFinish == null).ThenByDescending(x => x.WorksFinish).ToList();
                         break;
-                    }
                 case "Цена":
-                    {
-                        AutoServiceList = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
-                                AutoServiceList.OrderBy(x => x.Order.WorksPrice).ToList() :
-                                AutoServiceList.OrderByDescending(x => x.Order.WorksPrice).ToList();
+                        _listOfOrders = SortDirectionComboBoxSelectedItem == "По возрастанию" ?
+                                _listOfOrders.OrderBy(x => x.WorksPrice).ToList() :
+                                _listOfOrders.OrderByDescending(x => x.WorksPrice).ToList();
                         break;
-                    }
             }
         }
-#endregion
+
+        #endregion
 
         #region INotifyPropertyChanged
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
+
         #endregion
     }
 }

@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using AutoServiceModel;
-
-namespace AutoServiceManager.ViewModels
+﻿namespace AutoServiceManager.ViewModels
 {
     class ColumnChartViewModel : BaseChartViewModel
     {
@@ -10,6 +6,5 @@ namespace AutoServiceManager.ViewModels
         {
             Mediator.Mediator.Register("ColumnDiagramStatistics", ShowDiagram);
         }
-
     }
 }

@@ -3,10 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:AutoServiceManager.Views"
              xmlns:DV="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
              xmlns:DVC="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
-             xmlns:viewModels="clr-namespace:AutoServiceManager.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -20,7 +18,6 @@
             <DVC:Chart.Series>
                 <DVC:LineSeries ItemsSource="{Binding ListOfPoints}" IndependentValueBinding="{Binding Key}" DependentValueBinding="{Binding Value}" ></DVC:LineSeries>
             </DVC:Chart.Series>
-
         </DVC:Chart>
     </Grid>
 </UserControl>
